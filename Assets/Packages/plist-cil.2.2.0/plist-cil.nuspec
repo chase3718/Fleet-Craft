@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>plist-cil</id>
+    <version>2.2.0</version>
+    <authors>Natalia Portillo</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://www.github.com/claunia/plist-cil</projectUrl>
+    <description>MIT licensed C#/.NET parser and writer for Apple and GnuStep Property Lists, supporting ASCII, Binary and Xml formats, based on Java's dd-plist.</description>
+    <releaseNotes>Update XML representation of UIDs.
+Add .NET 5.0 support.</releaseNotes>
+    <copyright>© 2015-2020 Natalia Portillo</copyright>
+    <tags>apple propertylist property list gnustep plist</tags>
+    <repository type="git" url="https://github.com/claunia/plist-cil.git" commit="aec967537542e723b3e6e8188156caead2233cc4" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="System.Memory" version="4.5.4" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETCoreApp2.1" />
+      <group targetFramework=".NETCoreApp3.1" />
+      <group targetFramework="net5.0" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Memory" version="4.5.4" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
