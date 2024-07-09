@@ -14,7 +14,7 @@ public enum ShipPartCategory
 
 public class ShipPart : MonoBehaviour
 {
-    public string key => $"{partName}_{position}";
+    public string key => $"{partName}_{ToVector3Int(position)}";
     public string partName;
     public string alias;
     public string description;
@@ -42,7 +42,29 @@ public class ShipPart : MonoBehaviour
         SetBoxColliders();
     }
 
-    List<BoxCollider> SetBoxColliders()
+    public void Highlight(Color color)
+    {
+        foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>())
+        {
+            // add emission to the material
+            Material material = meshRenderer.material;
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", color);
+
+        }
+    }
+
+    public void Unhighlight()
+    {
+        foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>())
+        {
+            // remove emission from the material
+            Material material = meshRenderer.material;
+            material.DisableKeyword("_EMISSION");
+        }
+    }
+
+    public List<BoxCollider> SetBoxColliders()
     {
         GameObject colliderContainer = gameObject.transform.Find("Colliders").gameObject;
         List<BoxCollider> colliders = new List<BoxCollider>();
@@ -63,7 +85,7 @@ public class ShipPart : MonoBehaviour
         Vector3 center = Vector3.zero;
         foreach (BoxCollider collider in boxColliders)
         {
-            center += collider.transform.position;
+            center += collider.transform.localPosition;
         }
         return center / boxColliders.Count;
     }
@@ -93,13 +115,13 @@ public class ShipPart : MonoBehaviour
 
     Vector3Int GetDimensions()
     {
+
         Vector3 min = Vector3.positiveInfinity;
         Vector3 max = Vector3.negativeInfinity;
         foreach (BoxCollider collider in boxColliders)
         {
             min = Vector3.Min(min, collider.transform.position);
             max = Vector3.Max(max, collider.transform.position);
-
         }
         return ToVector3Int(new Vector3(Mathf.Abs(max.x - min.x) + 1, Mathf.Abs(max.y - min.y) + 1, Mathf.Abs(max.z - min.z) + 1));
     }

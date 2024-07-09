@@ -25,18 +25,12 @@ public class Ship : MonoBehaviour
     public int width;
     public int height;
     public int length;
-    [SerializeField]
-    int minX;
-    [SerializeField]
-    int minY;
-    [SerializeField]
-    int minZ;
-    [SerializeField]
-    int maxX;
-    [SerializeField]
-    int maxY;
-    [SerializeField]
-    int maxZ;
+    public int minX;
+    public int minY;
+    public int minZ;
+    public int maxX;
+    public int maxY;
+    public int maxZ;
 
     public string savePath => $"{Application.persistentDataPath}/savedata/ships/{id}/ship.json";
 
@@ -44,24 +38,29 @@ public class Ship : MonoBehaviour
     {
         if (shipParts.ContainsKey(part.key))
         {
+            print("Part already exists");
             Destroy(part.gameObject);
             return false;
         }
-        shipParts.Add(part.key, part);
-        SetLayerRecursively(part.gameObject);
-        part.transform.SetParent(transform);
         foreach (BoxCollider collider in part.boxColliders)
         {
             if (colliderData.ContainsKey(collider.transform.position.ToString()))
             {
+                print("Collision detected");
                 Destroy(part.gameObject);
                 shipParts.Remove(part.key);
                 SetColliderData();
                 return false;
             }
-            colliderData.Add(collider.transform.position.ToString(), collider.gameObject);
-
         }
+        foreach (BoxCollider collider in part.boxColliders)
+        {
+            colliderData.Add(collider.transform.position.ToString(), collider.gameObject);
+        }
+        shipParts.Add(part.key, part);
+        SetLayerRecursively(part.gameObject);
+        part.transform.SetParent(transform);
+
         return true;
     }
 
@@ -149,7 +148,7 @@ public class Ship : MonoBehaviour
         maxY = Int32.MinValue;
         maxZ = Int32.MinValue;
 
-        foreach (Vector3 position in colliderData.ToArray().Select(x => ToVector3(x.Key)))
+        foreach (Vector3Int position in colliderData.ToArray().Select(x => ToVector3Int(x.Key)))
         {
             if ((int)position.x < (int)minX)
             {
@@ -252,8 +251,9 @@ public class Ship : MonoBehaviour
             }
         }
     }
-    private Vector3 ToVector3(string pos)
+    private Vector3Int ToVector3Int(string pos)
     {
+        print(pos);
         if (pos.StartsWith("(") && pos.EndsWith(")"))
         {
             pos = pos.Substring(1, pos.Length - 2);
@@ -261,7 +261,7 @@ public class Ship : MonoBehaviour
 
         string[] sArray = pos.Split(',');
 
-        Vector3 result = new Vector3(float.Parse(sArray[0]), float.Parse(sArray[1]), float.Parse(sArray[2]));
+        Vector3Int result = new Vector3Int((int)float.Parse(sArray[0]), (int)float.Parse(sArray[1]), (int)float.Parse(sArray[2]));
 
         return result;
     }
@@ -292,14 +292,15 @@ public class Ship : MonoBehaviour
         {
             GameObject part = Instantiate(Resources.Load(ssp.prefabPath) as GameObject);
             ShipPart shipPart = part.GetComponent<ShipPart>().Deserialize(ssp);
+            part.name = shipPart.key;
             shipPart.transform.SetParent(transform);
             AddPart(shipPart);
-
         }
 
         SetStaticParts();
         SetWeaponParts();
         SetColliderData();
+        SetDimensions();
     }
     public void Save()
     {

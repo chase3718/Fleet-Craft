@@ -4,6 +4,7 @@ using UnityEngine.InputSystem.LowLevel;
 
 public class CameraManager : MonoBehaviour
 {
+    Ship ship;
     DockActions dockActions;
     InputAction movement;
     InputAction shift;
@@ -48,8 +49,10 @@ public class CameraManager : MonoBehaviour
 
     void Awake()
     {
+        ship = FindObjectOfType<Ship>();
         dockActions = new DockActions();
         camTransform = GetComponentInChildren<Camera>().transform;
+        zoomAmount = -ship.maxZ - 10;
     }
 
     void OnEnable()
@@ -183,7 +186,7 @@ public class CameraManager : MonoBehaviour
             velocity = Vector3.Lerp(velocity, Vector3.zero, panDamping * Time.deltaTime);
             transform.position += velocity * Time.deltaTime;
         }
-
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, ship.minX - 10, ship.maxX + 10), Mathf.Clamp(transform.position.y, ship.minY - 10, ship.maxY + 10), Mathf.Clamp(transform.position.z, ship.minZ - 10, ship.maxZ + 10));
         targetPosition = Vector3.zero;
     }
 

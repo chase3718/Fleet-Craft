@@ -135,6 +135,39 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "Drag + Middle Mouse",
+                    "id": "7adc6889-f3b8-4ead-b4ea-20d6997debca",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "InvertVector2",
+                    "groups": "",
+                    "action": "Pan",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "45417ffe-8f9a-4b77-8834-5328e99ccccd",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pan",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "d14c389a-bfde-4b2b-8249-fe8b4a2b3ff1",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pan",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "0d64cca5-d5c9-4c6c-903a-44da909203bf",
                     "path": "<Mouse>/scroll",
