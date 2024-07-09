@@ -352,6 +352,16 @@ public class Ship : MonoBehaviour
         string json = JsonConvert.SerializeObject(Encoding.ASCII.GetString(data));
         Deserialize(json);
     }
+    //Just for testing
+    public void PremadeShip()
+    {
+        string data = Resources.Load<TextAsset>("Premade Ships/ship").ToString();
+
+
+        string json = JsonConvert.SerializeObject(data);
+        Deserialize(json);
+
+    }
 
     public string Hash()
     {

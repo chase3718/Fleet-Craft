@@ -14,7 +14,8 @@ public class DockedShip : MonoBehaviour
     void Start()
     {
         ship = gameObject.GetComponent<Ship>();
-        ship.Load("037a182d-00b8-4834-b63f-0549369c3666");
+        // ship.Load("037a182d-00b8-4834-b63f-0549369c3666");
+        ship.PremadeShip();
         InstantiateShip();
         camRig = FindObjectOfType<CameraManager>().transform;
     }
