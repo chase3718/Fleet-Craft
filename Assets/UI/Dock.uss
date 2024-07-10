@@ -1,15 +1,16 @@
 .toolbar {
-    height: 60px;
-    max-height: 60px;
+    height: 10%;
+    max-height: none;
     background-color: rgba(0, 0, 0, 0.91);
     align-items: center;
     justify-content: center;
     flex-direction: row;
+    max-width: 100%;
 }
 
 .toolbar-button {
-    width: 60px;
-    height: 60px;
+    width: auto;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0);
     border-left-color: rgba(0, 0, 0, 0);
     border-right-color: rgba(0, 0, 0, 0);
@@ -20,11 +21,10 @@
     transition-duration: 0s;
     transition-timing-function: ease;
     transition-delay: 0s;
+    max-height: none;
 }
 
 .toolbar-button:hover {
-    width: 60px;
-    height: 60px;
     background-color: rgba(0, 0, 0, 0.67);
     border-left-color: rgba(0, 0, 0, 0);
     border-right-color: rgba(0, 0, 0, 0);

@@ -28,6 +28,10 @@ public class PartPreviewManager : MonoBehaviour
         previewBackground.renderTexture = cameraTexture;
         previewUI.style.backgroundImage = previewBackground;
         previewCameraRig = previewCamera.transform.parent;
+
+        previewUI.style.width = Length.Percent(30);
+        previewUI.style.maxWidth = Length.Percent(30);
+        previewUI.style.height = Length.Percent(30);
     }
 
     void Update()

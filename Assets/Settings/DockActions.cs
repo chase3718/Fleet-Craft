@@ -98,6 +98,15 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Touch1Contact"",
+                    ""type"": ""Button"",
+                    ""id"": ""0218bcb4-076b-48ce-a347-b0ceff22cf8b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -190,6 +199,39 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
+                    ""name"": ""Two Finger Drag"",
+                    ""id"": ""137d075a-2c39-414b-af12-62891411ccc8"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pan"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""7920b810-a4ca-4f8c-aa97-2449e89ad52d"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""6ced6e1d-f52b-4640-a01b-ac601beddf19"",
+                    ""path"": ""<Touchscreen>/touch1/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": """",
                     ""id"": ""0d64cca5-d5c9-4c6c-903a-44da909203bf"",
                     ""path"": ""<Mouse>/scroll"",
@@ -261,7 +303,7 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
+                    ""groups"": """",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -272,7 +314,7 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
+                    ""groups"": """",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -283,7 +325,7 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Touchscreen>/touch0/delta"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Touch;Keyboard&Mouse"",
+                    ""groups"": """",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -320,6 +362,50 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
                     ""action"": ""Touch2Contact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f73fccb2-62ed-4f1e-89f5-b602a2a191c3"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Touch1Contact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Two Finger Drag"",
+                    ""id"": ""fe66fe4d-dd18-474b-a2ea-1ef57c282af6"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""b907a3bc-3f0b-42cf-9371-4c290a4142b5"",
+                    ""path"": ""<Touchscreen>/touch0/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""6d8a4372-88b0-424d-94ac-7b42b00804b5"",
+                    ""path"": ""<Touchscreen>/touch1/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -1127,6 +1213,7 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
         m_Movement_TouchPoint = m_Movement.FindAction("TouchPoint", throwIfNotFound: true);
         m_Movement_TouchPoint2 = m_Movement.FindAction("TouchPoint2", throwIfNotFound: true);
         m_Movement_Touch2Contact = m_Movement.FindAction("Touch2Contact", throwIfNotFound: true);
+        m_Movement_Touch1Contact = m_Movement.FindAction("Touch1Contact", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1217,6 +1304,7 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Movement_TouchPoint;
     private readonly InputAction m_Movement_TouchPoint2;
     private readonly InputAction m_Movement_Touch2Contact;
+    private readonly InputAction m_Movement_Touch1Contact;
     public struct MovementActions
     {
         private @DockActions m_Wrapper;
@@ -1229,6 +1317,7 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
         public InputAction @TouchPoint => m_Wrapper.m_Movement_TouchPoint;
         public InputAction @TouchPoint2 => m_Wrapper.m_Movement_TouchPoint2;
         public InputAction @Touch2Contact => m_Wrapper.m_Movement_Touch2Contact;
+        public InputAction @Touch1Contact => m_Wrapper.m_Movement_Touch1Contact;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1262,6 +1351,9 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
             @Touch2Contact.started += instance.OnTouch2Contact;
             @Touch2Contact.performed += instance.OnTouch2Contact;
             @Touch2Contact.canceled += instance.OnTouch2Contact;
+            @Touch1Contact.started += instance.OnTouch1Contact;
+            @Touch1Contact.performed += instance.OnTouch1Contact;
+            @Touch1Contact.canceled += instance.OnTouch1Contact;
         }
 
         private void UnregisterCallbacks(IMovementActions instance)
@@ -1290,6 +1382,9 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
             @Touch2Contact.started -= instance.OnTouch2Contact;
             @Touch2Contact.performed -= instance.OnTouch2Contact;
             @Touch2Contact.canceled -= instance.OnTouch2Contact;
+            @Touch1Contact.started -= instance.OnTouch1Contact;
+            @Touch1Contact.performed -= instance.OnTouch1Contact;
+            @Touch1Contact.canceled -= instance.OnTouch1Contact;
         }
 
         public void RemoveCallbacks(IMovementActions instance)
@@ -1574,6 +1669,7 @@ public partial class @DockActions: IInputActionCollection2, IDisposable
         void OnTouchPoint(InputAction.CallbackContext context);
         void OnTouchPoint2(InputAction.CallbackContext context);
         void OnTouch2Contact(InputAction.CallbackContext context);
+        void OnTouch1Contact(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

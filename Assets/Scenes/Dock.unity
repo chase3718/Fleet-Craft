@@ -366,12 +366,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panDefaultSpeed: 18
   panMaxSpeed: 30
-  panAcceleration: 20
-  panDamping: 10
   zoomMin: 5
   zoomMax: 50
   zoomSpeed: 5
-  rotationSpeed: 15
+  rotationSpeed: 2
   zoomAmount: 0
   lastPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &352796171
@@ -702,6 +700,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   instance: {fileID: 0}
+  targetRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!4 &1047663627
 Transform:
   m_ObjectHideFlags: 0

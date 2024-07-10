@@ -35,6 +35,13 @@ public class DockUIManager : MonoBehaviour
         weaponBtn.clicked += () => TogglePartList("Weapon");
         selectBtn.clicked += () => buildManager.dockMode = DockMode.Select;
         saveBtn.clicked += () => ship.Save();
+
+        deleteBtn.style.width = deleteBtn.style.height;
+        hullBtn.style.width = hullBtn.style.height;
+        weaponBtn.style.width = weaponBtn.style.height;
+        saveBtn.style.width = saveBtn.style.height;
+        selectBtn.style.width = selectBtn.style.height;
+
     }
 
     void InitPartLists()
