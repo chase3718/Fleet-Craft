@@ -28,7 +28,11 @@ public class DockUIManager : MonoBehaviour
         hullBtn = doc.rootVisualElement.Q<Button>("HullBtn");
         weaponBtn = doc.rootVisualElement.Q<Button>("WeaponBtn");
         saveBtn = doc.rootVisualElement.Q<Button>("SaveBtn");
-        deleteBtn.clicked += () => buildManager.dockMode = DockMode.Delete;
+        deleteBtn.clicked += () =>
+        {
+            buildManager.dockMode = DockMode.Delete;
+            TogglePartList(null); //Hide the part list because you're no longer in building mode
+        };
         hullBtn.clicked += () => TogglePartList("Hull");
         weaponBtn.clicked += () => TogglePartList("Weapon");
         saveBtn.clicked += () => ship.Save();
