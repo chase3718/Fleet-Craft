@@ -13,6 +13,7 @@ public class DockUIManager : MonoBehaviour
     Button hullBtn;
     Button weaponBtn;
     Button saveBtn;
+    Button selectBtn;
     ListView partList;
     Dictionary<string, List<ShipPart>> partLists = new Dictionary<string, List<ShipPart>>();
 
@@ -28,6 +29,7 @@ public class DockUIManager : MonoBehaviour
         hullBtn = doc.rootVisualElement.Q<Button>("HullBtn");
         weaponBtn = doc.rootVisualElement.Q<Button>("WeaponBtn");
         saveBtn = doc.rootVisualElement.Q<Button>("SaveBtn");
+        selectBtn = doc.rootVisualElement.Q<Button>("SelectBtn");
         deleteBtn.clicked += () =>
         {
             buildManager.dockMode = DockMode.Delete;
@@ -35,7 +37,18 @@ public class DockUIManager : MonoBehaviour
         };
         hullBtn.clicked += () => TogglePartList("Hull");
         weaponBtn.clicked += () => TogglePartList("Weapon");
+        selectBtn.clicked += () => {
+            buildManager.dockMode = DockMode.Select;
+            TogglePartList(null); //Hide the part list because you're no longer in building mode
+        };
         saveBtn.clicked += () => ship.Save();
+
+        deleteBtn.style.width = deleteBtn.style.height;
+        hullBtn.style.width = hullBtn.style.height;
+        weaponBtn.style.width = weaponBtn.style.height;
+        saveBtn.style.width = saveBtn.style.height;
+        selectBtn.style.width = selectBtn.style.height;
+
     }
 
     void InitPartLists()
@@ -67,7 +80,11 @@ public class DockUIManager : MonoBehaviour
             partList.bindItem = (e, i) =>
             {
                 (e as Button).text = (partList.itemsSource[i] as ShipPart).alias;
-                (e as Button).clicked += () => buildManager.SetGhostBlock(partList.itemsSource[i] as ShipPart);
+                (e as Button).clicked += () =>
+                {
+                    buildManager.SetGhostBlock(partList.itemsSource[i] as ShipPart);
+                    buildManager.dockMode = DockMode.Build;
+                };
             };
             partList.itemsChosen += items => Debug.Log(items);
             partList.selectionChanged += items => Debug.Log(items);

@@ -9,6 +9,7 @@ public class BuildManager : MonoBehaviour
 {
     [SerializeField]
     DockedShip ship;
+    PartPreviewManager partPreview;
     DockActions dockActions;
     InputAction shift;
     InputAction pointerHeld;
@@ -21,20 +22,57 @@ public class BuildManager : MonoBehaviour
     float timeOfLastPlace = 0;
     bool overUI = false;
     public DockMode dockMode = DockMode.Build;
+    ShipPart selectedPart;
+    PartPreviewManager previewObject;
 
     void Awake()
     {
         ship = FindObjectOfType<DockedShip>();
+        partPreview = FindObjectOfType<PartPreviewManager>();
         dockActions = new DockActions();
-        //Assets/Resources/Prefabs/ShipParts/Hull/hull.prefab
         SetGhostBlock(Resources.Load<ShipPart>("Prefabs/ShipParts/Hull/hull"));
         shift = dockActions.Build.Shift;
-        dockActions.Build.Place.performed += PlaceBlock;
-        dockActions.Build.DragPlacement.performed += DragAndPlaceBlock;
+        dockActions.Build.Place.performed += HandleClick;
         dockActions.Build.Rotate.performed += RotateGhostBlock;
         camRig = FindObjectOfType<CameraManager>().transform;
+        previewObject = FindObjectOfType<PartPreviewManager>();
+    }
+    void OnEnable()
+    {
+        dockActions.Build.Enable();
     }
 
+    void OnDisable()
+    {
+        dockActions.Build.Disable();
+    }
+
+    void Update()
+    {
+        CheckIfOverUI();
+        if (overUI)
+        {
+            return;
+        }
+        if (dockMode == DockMode.Build)
+        {
+            if (highlightedPart != null)
+            {
+                highlightedPart.Unhighlight();
+                highlightedPart = null;
+            }
+            BuildMode();
+        }
+        else if (dockMode == DockMode.Delete)
+        {
+            DeleteMode();
+        }
+        else if (dockMode == DockMode.Select)
+        {
+            SelectMode();
+        }
+
+    }
     public void SetGhostBlock(ShipPart part)
     {
         if (ghostBlock != null)
@@ -56,6 +94,8 @@ public class BuildManager : MonoBehaviour
             r.materials = updatedMaterials.ToArray();
         }
         ghostBlock.name = "GhostBlock";
+        partPreview.SetPreviewObject(ghostBlock.gameObject);
+
     }
 
     void RotateGhostBlock(InputAction.CallbackContext context)
@@ -67,7 +107,7 @@ public class BuildManager : MonoBehaviour
         Vector2 dir = context.ReadValue<Vector2>();
         if (dir.x != 0)
         {
-            ghostBlock.transform.Rotate(transform.up, Sign(dir.x) * 90);
+            ghostBlock.transform.Rotate(transform.up, Sign(dir.x) * 90, Space.World);
         }
         if (dir.y != 0 && !ghostBlock.lockVerticalRotation)
         {
@@ -77,42 +117,17 @@ public class BuildManager : MonoBehaviour
             yRot = Mathf.Round(yRot / 90) * 90;
             if (yRot == 0 || yRot == 360 || yRot == 180)
             {
-                ghostBlock.transform.Rotate(transform.right, Sign(dir.y) * 90);
+                ghostBlock.transform.Rotate(transform.right, Sign(dir.y) * 90, Space.World);
             }
             else if (yRot == 90 || yRot == 270)
             {
-                ghostBlock.transform.Rotate(transform.forward, Sign(dir.y) * 90);
+                ghostBlock.transform.Rotate(transform.forward, Sign(dir.y) * 90, Space.World);
             }
         }
+        previewObject.targetRotation = ghostBlock.transform.rotation;
     }
 
-    void OnEnable()
-    {
-        dockActions.Build.Enable();
-    }
 
-    void OnDisable()
-    {
-        dockActions.Build.Disable();
-    }
-
-    void Update()
-    {
-        CheckIfOverUI();
-        if (overUI)
-        {
-            return;
-        }
-        if (dockMode == DockMode.Build)
-        {
-            BuildMode();
-        }
-        else if (dockMode == DockMode.Delete)
-        {
-            DeleteMode();
-        }
-
-    }
 
     void BuildMode()
     {
@@ -134,9 +149,9 @@ public class BuildManager : MonoBehaviour
             ghostBlock.transform.position = Vector3.up * 1000;
             ghostBlock.gameObject.SetActive(false);
         }
-        HandleLeftClick();
     }
 
+    ShipPart highlightedPart = null;
     void DeleteMode()
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -144,7 +159,51 @@ public class BuildManager : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 100f, layerMask: (1 << 6)))
         {
             ShipPart part = hit.transform.parent.parent.GetComponent<ShipPart>();
-            // part.Highlight();
+            part.Highlight(Color.red);
+            if (highlightedPart != null && highlightedPart != part)
+            {
+                highlightedPart.Unhighlight();
+            }
+            highlightedPart = part;
+
+        }
+        else
+        {
+            if (highlightedPart != null)
+            {
+                highlightedPart.Unhighlight();
+                highlightedPart = null;
+            }
+
+        }
+    }
+
+    void SelectMode()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100f, layerMask: (1 << 6)))
+        {
+            ShipPart part = hit.transform.parent.parent.GetComponent<ShipPart>();
+            part.Highlight(Color.yellow);
+            if (highlightedPart != null && highlightedPart != part)
+            {
+                highlightedPart.Unhighlight();
+            }
+            highlightedPart = part;
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                selectedPart = part;
+                dockMode = DockMode.Edit;
+            }
+        }
+        else
+        {
+            if (highlightedPart != null)
+            {
+                highlightedPart.Unhighlight();
+                highlightedPart = null;
+            }
         }
     }
 
@@ -162,7 +221,7 @@ public class BuildManager : MonoBehaviour
         }
     }
 
-    void PlaceBlock(InputAction.CallbackContext context)
+    void HandleClick(InputAction.CallbackContext context)
     {
         if (overUI)
         {
@@ -174,7 +233,7 @@ public class BuildManager : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 100f, layerMask: (1 << 6)))
             {
-                ShipPart newBlock = PlaceGhostBlock(hit.transform.position + hit.normal);
+                ShipPart newBlock = PlaceGhostBlock();
                 if (newBlock != null && shift.ReadValue<float>() == 1)
                 {
                     ship.ShiftPosition(newBlock, hit.normal);
@@ -199,88 +258,13 @@ public class BuildManager : MonoBehaviour
 
     }
 
-    ShipPart partOnClick = null;
-    ShipPart lastPlacedBlock = null;
-    Vector3 startDragDelta = Vector3.zero;
-    List<string> blocksPlacedFromDrag = new List<string>();
-    Vector3 lastHitNormal;
-    Vector3 lastHitPoint;
-    bool dragStart = false;
-    void DragAndPlaceBlock(InputAction.CallbackContext context)
+    ShipPart PlaceGhostBlock()
     {
-        if (overUI)
-        {
-            return;
-        }
-        if (lastPlacedBlock != null && dragStart)
-        {
-            if (startDragDelta == Vector3.zero)
-            {
-                startDragDelta = context.ReadValue<Vector2>();
-            }
-            Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100f, layerMask: (1 << 6)))
-            {
-                if (!blocksPlacedFromDrag.Contains(hit.transform.parent.parent.GetComponent<ShipPart>().key))
-                {
-                    if (PlaceGhostBlock(hit.transform.position + hit.normal) != null)
-                    {
-                        lastHitNormal = hit.normal;
-                    }
-
-
-                }
-                lastHitPoint = hit.point;
-            }
-            else
-            {
-                //Todo: when no hit, change mode to straight line
-                Vector3 lastHitSide = lastPlacedBlock.transform.position + (lastHitNormal / 2);
-                Vector3 dragDirection = (lastHitPoint - lastHitSide).normalized;
-                float xMag = Mathf.Abs(dragDirection.x);
-                float yMag = Mathf.Abs(dragDirection.y);
-                float zMag = Mathf.Abs(dragDirection.z);
-                Vector3 Normal = Vector3.zero;
-                if (xMag > yMag && xMag > zMag)
-                {
-                    Normal = new Vector3(Sign(dragDirection.x), 0, 0);
-                }
-                else if (yMag > xMag && yMag > zMag)
-                {
-                    Normal = new Vector3(0, Sign(dragDirection.y), 0);
-                }
-                else
-                {
-                    Normal = new Vector3(0, 0, Sign(dragDirection.z));
-                }
-
-                Vector3 dimensions = lastPlacedBlock.transform.rotation * lastPlacedBlock.dimensions;
-                dimensions = new Vector3(Mathf.Abs(dimensions.x), Mathf.Abs(dimensions.y), Mathf.Abs(dimensions.z));
-                Normal = new Vector3(Normal.x * dimensions.x, Normal.y * dimensions.y, Normal.z * dimensions.z);
-
-
-                PlaceGhostBlock(lastPlacedBlock.transform.position + Normal);
-
-
-            }
-        }
-    }
-
-    ShipPart PlaceGhostBlock(Vector3 position)
-    {
-        ShipPart newBlock = Instantiate(Resources.Load(ghostBlock.prefabPath), position, ghostBlock.transform.rotation).GetComponent<ShipPart>();
+        ShipPart newBlock = Instantiate(Resources.Load(ghostBlock.prefabPath), ghostBlock.position, ghostBlock.transform.rotation).GetComponent<ShipPart>();
         newBlock.gameObject.SetActive(true);
         newBlock.name = newBlock.key;
         if (ship.AddPart(newBlock))
         {
-            lastPlacedBlock = newBlock;
-            if (dragging)
-            {
-                blocksPlacedFromDrag.Add(newBlock.key);
-            }
-            lastPlacedBlock = newBlock;
-            timeOfLastPlace = Time.time;
             return newBlock;
 
         }
@@ -302,38 +286,6 @@ public class BuildManager : MonoBehaviour
         else
         {
             return 0;
-        }
-    }
-
-
-
-    bool dragging = false;
-
-    void HandleLeftClick()
-    {
-        if (Mouse.current.leftButton.IsPressed() && dragging && !dragStart)
-        {
-
-            dragStart = true;
-            Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100f, layerMask: (1 << 6)))
-            {
-                if (PlaceGhostBlock(hit.transform.position + hit.normal))
-                {
-                    lastHitNormal = hit.normal;
-                    partOnClick = hit.transform.parent.parent.GetComponent<ShipPart>();
-                }
-            }
-        }
-        else if (!Mouse.current.leftButton.isPressed && dragging)
-        {
-            partOnClick = null;
-            startDragDelta = Vector3.zero;
-            lastPlacedBlock = null;
-            dragging = false;
-            blocksPlacedFromDrag.Clear();
-            dragStart = false;
         }
     }
 }

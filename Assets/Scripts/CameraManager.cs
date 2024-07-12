@@ -1,15 +1,18 @@
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 
 public class CameraManager : MonoBehaviour
 {
+    Ship ship;
     DockActions dockActions;
-    InputAction movement;
+    InputAction pan;
     InputAction shift;
     InputAction rise;
     InputAction touch1;
     InputAction touch2;
+    InputAction touch1Contact;
     InputAction touch2Contact;
     Transform camTransform;
 
@@ -18,13 +21,6 @@ public class CameraManager : MonoBehaviour
     float panDefaultSpeed = 18f;
     [SerializeField]
     float panMaxSpeed = 30f;
-    float xzPanSpeed;
-    float yPanSpeed;
-    [SerializeField]
-    float panAcceleration = 20f;
-    [SerializeField]
-    float panDamping = 10f;
-
     // Zooming
     [SerializeField]
     float zoomMin = 5f;
@@ -38,18 +34,15 @@ public class CameraManager : MonoBehaviour
     float rotationSpeed = 15f;
 
     public float zoomAmount;
-
-    Vector3 velocity;
+    Vector3 movement;
 
     public Vector3 lastPosition;
-    Vector3 targetPosition;
-
-    Vector3 startDragPos;
-
     void Awake()
     {
+        ship = FindObjectOfType<Ship>();
         dockActions = new DockActions();
         camTransform = GetComponentInChildren<Camera>().transform;
+        zoomAmount = -ship.maxZ - 10;
     }
 
     void OnEnable()
@@ -58,15 +51,15 @@ public class CameraManager : MonoBehaviour
         camTransform.LookAt(transform);
 
         lastPosition = transform.position;
-        movement = dockActions.Movement.Pan;
+        pan = dockActions.Movement.Pan;
         rise = dockActions.Movement.Rise;
         shift = dockActions.Movement.Shift;
         touch1 = dockActions.Movement.TouchPoint;
         touch2 = dockActions.Movement.TouchPoint2;
+        touch1Contact = dockActions.Movement.Touch1Contact;
         touch2Contact = dockActions.Movement.Touch2Contact;
         dockActions.Movement.Zoom.performed += ZoomCamera;
         dockActions.Movement.Rotate.performed += RotateCamera;
-        dockActions.Movement.TouchPoint2.performed += GetTwoTouchMovement;
         dockActions.Movement.Enable();
     }
 
@@ -74,7 +67,6 @@ public class CameraManager : MonoBehaviour
     {
         dockActions.Movement.Zoom.performed += ZoomCamera;
         dockActions.Movement.Rotate.performed -= RotateCamera;
-        dockActions.Movement.TouchPoint2.performed -= GetTwoTouchMovement;
 
         dockActions.Movement.Disable();
     }
@@ -83,78 +75,72 @@ public class CameraManager : MonoBehaviour
     {
         GetHorizontalMovement();
         GetVerticalMovement();
-        UpdateVelocity();
-        UpdateBasePosition();
+        ApplyMovement();
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, ship.minX - 2, ship.maxX + 2), Mathf.Clamp(transform.position.y, ship.minY - 2, ship.maxY + 2), Mathf.Clamp(transform.position.z, ship.minZ - 2, ship.maxZ + 2));
     }
 
-    void UpdateVelocity()
+    void ApplyMovement()
     {
-        velocity = (transform.position - lastPosition) / Time.deltaTime;
-
-        lastPosition = transform.position;
+        float mod = shift.ReadValue<float>() == 1 ? panMaxSpeed : panDefaultSpeed;
+        transform.position += movement * Time.deltaTime * mod;
+        movement = Vector3.zero;
     }
 
     void GetHorizontalMovement()
     {
-        Vector3 inputValue = movement.ReadValue<Vector2>().x * GetCameraRight()
-                           + movement.ReadValue<Vector2>().y * GetCameraForward();
-
-        inputValue = inputValue.normalized;
-
-        if (inputValue.sqrMagnitude > 0.1f)
+        Vector3 inputValue;
+        if (touch2Contact.ReadValue<float>() == 1)
         {
-            targetPosition += inputValue;
+            Vector3 touch1delta = touch1.ReadValue<TouchState>().delta;
+            Vector3 touch2delta = touch2.ReadValue<TouchState>().delta;
+
+            bool sameXDir = Mathf.Sign(touch1delta.x) == Mathf.Sign(touch2delta.x);
+            if (sameXDir)
+            {
+                inputValue = new Vector3(-touch1delta.x, 0, 0);
+                inputValue *= 19.2f / Screen.width;
+                inputValue = Quaternion.Euler(0, transform.eulerAngles.y, 0) * inputValue;
+
+                movement += inputValue;
+            }
         }
+        else
+        {
+
+            inputValue = pan.ReadValue<Vector2>().x * GetCameraRight()
+                               + pan.ReadValue<Vector2>().y * GetCameraForward();
+
+
+            movement += inputValue.normalized;
+        }
+
     }
 
     void GetVerticalMovement()
     {
-        Vector3 inputValue = Vector3.up * rise.ReadValue<float>();
-
-        if (inputValue.sqrMagnitude > 0.1f)
+        Vector3 inputValue;
+        if (touch2Contact.ReadValue<float>() == 1)
         {
-            targetPosition += inputValue;
+            Vector3 touch1delta = touch1.ReadValue<TouchState>().delta;
+            Vector3 touch2delta = touch2.ReadValue<TouchState>().delta;
+
+            bool sameYDir = Mathf.Sign(touch1delta.y) == Mathf.Sign(touch2delta.y);
+            if (sameYDir)
+            {
+                inputValue = new Vector3(0, -touch1delta.y, 0);
+                inputValue *= 10.8f / Screen.height;
+                inputValue = Quaternion.Euler(transform.eulerAngles.x, 0, 0) * inputValue;
+                movement += inputValue;
+            }
+        }
+        else
+        {
+
+            inputValue = Vector3.up * rise.ReadValue<float>();
+            movement += inputValue.normalized;
         }
     }
 
-    float lastDistance;
-    void GetTwoTouchMovement(InputAction.CallbackContext context)
-    {
-        TouchState input1 = touch1.ReadValue<TouchState>();
-        TouchState input2 = touch2.ReadValue<TouchState>();
-
-
-        float angle = Vector2.Angle(input1.delta, input2.delta);
-
-
-        Vector2 delta = input1.delta + input2.delta;
-        float xDelta = delta.x;
-        float yDelta = delta.y;
-
-        Vector3 horizValue = xDelta * GetCameraRight();
-        Vector3 vertiValue = Vector3.up * yDelta;
-
-        Vector3 inputValue = -Vector3.Normalize(horizValue + vertiValue) / 3;
-
-        if (inputValue.sqrMagnitude > 0.1f)
-        {
-            transform.position += inputValue;
-            lastPosition = transform.position;
-        }
-
-
-
-        if (angle > 60)
-        {
-            float input = Vector2.Distance(input1.position, input2.position) - lastDistance;
-
-            float zoom = -input * zoomSpeed * 10 * Time.deltaTime;
-            zoomAmount = Mathf.Clamp(camTransform.localPosition.z - zoom, -zoomMax, -zoomMin);
-            camTransform.localPosition = new Vector3(0, 0, zoomAmount);
-
-        }
-        lastDistance = Vector2.Distance(input1.position, input2.position);
-    }
 
     Vector3 GetCameraRight()
     {
@@ -170,22 +156,6 @@ public class CameraManager : MonoBehaviour
         return forward;
     }
 
-    void UpdateBasePosition()
-    {
-        if (targetPosition.sqrMagnitude > 0.1f)
-        {
-            float speed = shift.ReadValue<float>() == 1 ? panMaxSpeed : panDefaultSpeed;
-            xzPanSpeed = Mathf.Lerp(xzPanSpeed, speed, panAcceleration * Time.deltaTime);
-            transform.position += targetPosition * xzPanSpeed * Time.deltaTime;
-        }
-        else
-        {
-            velocity = Vector3.Lerp(velocity, Vector3.zero, panDamping * Time.deltaTime);
-            transform.position += velocity * Time.deltaTime;
-        }
-
-        targetPosition = Vector3.zero;
-    }
 
     void RotateCamera(InputAction.CallbackContext context)
     {
@@ -193,10 +163,19 @@ public class CameraManager : MonoBehaviour
         {
             return;
         }
-        Vector2 delta = context.ReadValue<Vector2>();
 
-        float xRot = delta.y * rotationSpeed * 10 * Time.deltaTime;
-        float yRot = delta.x * rotationSpeed * 10 * Time.deltaTime;
+        Vector2 delta = context.ReadValue<Vector2>();
+        print(delta);
+        if (delta.magnitude < 0.1f)
+        {
+            return;
+        }
+
+        delta *= new Vector3(1.92f / Screen.width, 1.08f / Screen.height, 0);
+
+
+        float xRot = delta.y * rotationSpeed * 1000 * Time.deltaTime;
+        float yRot = delta.x * rotationSpeed * 1000 * Time.deltaTime;
 
         transform.Rotate(Vector3.up, yRot, Space.World);
         transform.Rotate(Vector3.right, -xRot, Space.Self);
@@ -209,17 +188,52 @@ public class CameraManager : MonoBehaviour
 
         x = Mathf.Clamp(x, -80, 80);
 
-        transform.eulerAngles = new Vector3(x, transform.eulerAngles.y, transform.eulerAngles.z);
+        transform.eulerAngles = new Vector3(x, transform.eulerAngles.y, 0);
     }
 
     void ZoomCamera(InputAction.CallbackContext context)
     {
-        float input = -context.ReadValue<Vector2>().y;
+        if (touch2Contact.ReadValue<float>() == 1)
+        {
+            Vector3 touch1Delta = touch1.ReadValue<TouchState>().delta;
+            Vector3 touch2Delta = touch2.ReadValue<TouchState>().delta;
 
-        float zoom = input * zoomSpeed * Time.deltaTime;
-        zoomAmount = Mathf.Clamp(camTransform.localPosition.z - zoom, -zoomMax, -zoomMin);
+            bool sameYDir = Mathf.Sign(touch1Delta.y) == Mathf.Sign(touch2Delta.y);
+            bool sameXDir = Mathf.Sign(touch1Delta.x) == Mathf.Sign(touch2Delta.x);
+            if (!sameYDir || !sameXDir)
+            {
+                if (Mathf.Abs(touch1Delta.x) > Mathf.Abs(touch1Delta.y))
+                {
+                    float input = touch1Delta.x;
+                    float pan = input * panDefaultSpeed * Time.deltaTime;
+                    transform.position += transform.right * pan * 19.2f / Screen.width;
+                }
+                else
+                {
+                    float input = touch1Delta.y;
+                    float pan = input * panDefaultSpeed * Time.deltaTime;
+                    transform.position += transform.forward * pan * 10.8f / Screen.height;
+                }
 
-        camTransform.localPosition = new Vector3(0, 0, zoomAmount);
+
+            }
+        }
+        else
+        {
+
+            float input = -context.ReadValue<Vector2>().y;
+
+
+
+            float zoom = input * zoomSpeed * Time.deltaTime;
+            zoomAmount = Mathf.Clamp(camTransform.localPosition.z - zoom, -zoomMax, -zoomMin);
+
+            camTransform.localPosition = new Vector3(0, 0, zoomAmount);
+        }
     }
 
+    float Sign(float input)
+    {
+        return input > 0 ? 1 : -1;
+    }
 }
