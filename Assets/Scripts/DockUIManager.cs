@@ -58,7 +58,7 @@ public class DockUIManager : MonoBehaviour
 
     void TogglePartList(string category = null)
     {
-        if (partList.style.display == DisplayStyle.None && category != null)
+        if ( category != null)
         {
             buildManager.dockMode = DockMode.Build;
             partList.Clear();
