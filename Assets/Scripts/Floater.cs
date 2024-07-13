@@ -27,8 +27,12 @@ public class Floater : MonoBehaviour
             float colliderDisplacement = colliderVolume / colliderMass;
             float colliderBoyantForce = colliderDisplacement * Physics.gravity.y * -1f;
             totalBoyantForce += colliderBoyantForce;
-        }
 
+            Debug.Log(part.partName);
+        }
+        if( totalBoyantForce != totalBoyantForce ){ //if null
+            return;
+        }
         Vector3 boyantForce = new Vector3(0f, totalBoyantForce / part.boxColliders.Count, 0f);
         shipRb.AddForceAtPosition(boyantForce, part.centerOfMass);
     }

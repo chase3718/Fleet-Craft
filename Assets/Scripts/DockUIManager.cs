@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 public class DockUIManager : MonoBehaviour
 {
@@ -41,7 +42,10 @@ public class DockUIManager : MonoBehaviour
             buildManager.dockMode = DockMode.Select;
             TogglePartList(null); //Hide the part list because you're no longer in building mode
         };
-        saveBtn.clicked += () => ship.Save();
+        saveBtn.clicked += () => {
+            ship.Save();
+            SceneManager.LoadScene( "BoatTest" );
+            };
 
         deleteBtn.style.width = deleteBtn.style.height;
         hullBtn.style.width = hullBtn.style.height;
