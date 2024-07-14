@@ -12,9 +12,7 @@ public class Floater : MonoBehaviour
 
     void FixedUpdate()
     {
-        shipRb.MovePosition( new Vector3( 0f,1.0f,0f ) );
-        //shipRb.AddForceAtPosition( new Vector3( 0f,1f,0f ), part.centerOfMass );
-        //shipRb.AddForceAtPosition(Physics.gravity / ship.shipParts.Count, part.centerOfMass);
+        shipRb.AddForceAtPosition(Physics.gravity / ship.shipParts.Count, part.centerOfMass);
 
         float waterHeight = 0f;
         float totalBoyantForce = 0f;
@@ -34,8 +32,8 @@ public class Floater : MonoBehaviour
         if( totalBoyantForce != totalBoyantForce ){ //if null
             return;
         }
-        Vector3 boyantForce = new Vector3(0f, totalBoyantForce / part.boxColliders.Count, 0f);
-        //shipRb.AddForceAtPosition(boyantForce, part.centerOfMass);
+        Vector3 boyantForce = new Vector3(0f, totalBoyantForce / part.boxColliders.Count, 0f) / 5.0f;
+        shipRb.AddForceAtPosition(boyantForce, part.centerOfMass);
 
         Debug.Log( "angular: "+shipRb.angularVelocity+" | velocity: "+shipRb.velocity );
     }

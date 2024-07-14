@@ -88,7 +88,7 @@ MonoBehaviour:
   health: 0
   paintColor: {r: 0, g: 0, b: 0, a: 0}
   category: 0
-  isStatic: 1
+  isStatic: 0
   enableOffset: 0
   lockHorizontalRotation: 0
   lockVerticalRotation: 0
