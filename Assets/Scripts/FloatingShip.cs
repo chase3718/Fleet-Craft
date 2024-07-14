@@ -17,11 +17,15 @@ public class FloatingShip : MonoBehaviour
 
     void InstantiateShip()
     {
+        Rigidbody shipRb = ship.GetComponent<Rigidbody>();
+        shipRb.constraints = RigidbodyConstraints.None;
         foreach (ShipPart part in ship.shipParts.Values)
         {
+            Debug.Log(part.partName);
+
             Floater floater = part.AddComponent<Floater>();
             floater.ship = ship;
-            floater.shipRb = ship.GetComponent<Rigidbody>();
+            floater.shipRb = shipRb;
             floater.part = part;
         }
     }

@@ -342,6 +342,7 @@ public class Ship : MonoBehaviour
         else
         {
             Debug.LogError("File not found");
+            PremadeShip();
             return;
         }
 
