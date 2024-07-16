@@ -24,6 +24,8 @@ public class ShipPart : MonoBehaviour
     public float toughness;
     public float health;
     public float horsepower;
+    public float propellerSpin;
+    public bool isRudder;
     public Color paintColor;
     public ShipPartCategory category;
     public bool isStatic;

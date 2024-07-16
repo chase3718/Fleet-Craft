@@ -31,6 +31,7 @@ public class Ship : MonoBehaviour
     public int maxX;
     public int maxY;
     public int maxZ;
+    public float enginePower;
 
     public string savePath => $"{Application.persistentDataPath}/savedata/ships/{id}/ship.json";
 

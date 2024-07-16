@@ -6,10 +6,11 @@ using UnityEngine;
 public class FloatingShip : MonoBehaviour
 {
     Ship ship;
-    Rigidbody shipRb => ship.GetComponent<Rigidbody>();
+    Rigidbody shipRb;
     void Start()
     {
         ship = gameObject.GetComponent<Ship>();
+        shipRb = ship.GetComponent<Rigidbody>();
         ship.Load("037a182d-00b8-4834-b63f-0549369c3666");
         //Testing purposes
         //ship.PremadeShip();
@@ -18,25 +19,33 @@ public class FloatingShip : MonoBehaviour
 
     void InstantiateShip()
     {
-        Rigidbody shipRb = ship.GetComponent<Rigidbody>();
         shipRb.constraints = RigidbodyConstraints.None;
         foreach (ShipPart part in ship.shipParts.Values)
         {
             Debug.Log(part.partName);
 
-            Floater floater = part.AddComponent<Floater>();
-            floater.ship = ship;
-            floater.shipRb = shipRb;
-            floater.part = part;
+            InitComponent<Floater>(part);
 
             if( part.horsepower > 0 ){
-                Engine engine = part.AddComponent<Engine>();
-                engine.ship = ship;
-                engine.shipRb = shipRb;
-                engine.part = part;
-                engine.horsepower = part.horsepower;
+                InitComponent<Engine>(part);
+            }
+            if( part.propellerSpin > 0 ){
+                InitComponent<Propeller>(part);
+            }
+            if( part.isRudder ){
+                InitComponent<Rudder>(part);
             }
         }
+    }
+
+    //initialise the components easier
+    public T InitComponent<T >(ShipPart part) where T: Component, ShipMechanism
+    {
+        T component = part.AddComponent<T>();
+        component.ship = ship;
+        component.shipRb = shipRb;
+        component.part = part;
+        return component;
     }
 
     void FixedUpdate()

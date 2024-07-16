@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Engine : MonoBehaviour
+public class Engine : MonoBehaviour, ShipMechanism
 {
-    public Ship ship;
-    public Rigidbody shipRb;
-    public ShipPart part;
-    public float horsepower;
-    public Vector3 forceVector => ship.transform.forward * horsepower;
+    public Ship ship {get; set;}
+    public Rigidbody shipRb {get; set;}
+    public ShipPart part {get; set;}
 
-    public void Update(){
-        if( Input.GetKey( "w" ) ){
-            shipRb.AddForce( forceVector );
-        } else if( Input.GetKey( "s" ) ){
-            shipRb.AddForce( -forceVector );
-        }
+    public void Start(  ){
+        ship.enginePower += part.horsepower;
     }
+
+    public void FixedUpdate(){
+        //for damage
+    }
+
+    
 }

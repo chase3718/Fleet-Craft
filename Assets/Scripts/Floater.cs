@@ -4,11 +4,12 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Floater : MonoBehaviour
+public class Floater : MonoBehaviour, ShipMechanism
 {
-    public Ship ship;
-    public Rigidbody shipRb;
-    public ShipPart part;
+
+    public Ship ship {get; set;}
+    public Rigidbody shipRb {get; set;}
+    public ShipPart part {get; set;}
     public Vector3 floatPoint =>  part.transform.position+part.centerOfMass;
     public Vector3 massPoint =>  part.transform.position+part.centerOfMass;
 
@@ -44,7 +45,7 @@ public class Floater : MonoBehaviour
     
 
         //Debug
-        Debug.Log( "angular: "+shipRb.angularVelocity+" | velocity: "+shipRb.velocity );
+        //Debug.Log( "angular: "+shipRb.angularVelocity+" | velocity: "+shipRb.velocity );
         Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), part.position, new Color( 1.0f, 1.0f, 1.0f ) );
 
     }
