@@ -6,6 +6,7 @@ using UnityEngine;
 public class FloatingShip : MonoBehaviour
 {
     Ship ship;
+    Rigidbody shipRb => ship.GetComponent<Rigidbody>();
     void Start()
     {
         ship = gameObject.GetComponent<Ship>();
@@ -28,5 +29,12 @@ public class FloatingShip : MonoBehaviour
             floater.shipRb = shipRb;
             floater.part = part;
         }
+    }
+
+    void FixedUpdate()
+    {
+        //Drag
+        shipRb.AddForce( Vector3.zero - shipRb.velocity.normalized * (shipRb.velocity.magnitude * 1.0f) );
+        shipRb.AddTorque( Vector3.zero - shipRb.angularVelocity.normalized * (shipRb.angularVelocity.magnitude * 10.5f) );
     }
 }

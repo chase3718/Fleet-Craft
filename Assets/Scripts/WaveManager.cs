@@ -5,7 +5,7 @@ using UnityEngine;
 public class WaveManager : MonoBehaviour
 {
     public static WaveManager instance;
-    public float amplitude = 1f;
+    public float amplitude = 0f;
     public float length = 2f;
     public float speed = 1f;
     public float waveOffset = 0f;

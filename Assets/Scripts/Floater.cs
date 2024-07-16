@@ -9,11 +9,13 @@ public class Floater : MonoBehaviour
     public Ship ship;
     public Rigidbody shipRb;
     public ShipPart part;
+    public Vector3 floatPoint =>  part.transform.localPosition+part.centerOfMass;
+    public Vector3 massPoint =>  part.transform.localPosition+part.centerOfMass;
 
     void FixedUpdate()
     {
         //Gravity
-        shipRb.AddForceAtPosition(Physics.gravity / ship.shipParts.Count, part.centerOfMass);
+        shipRb.AddForceAtPosition(Physics.gravity / ship.shipParts.Count, massPoint);
 
         //Buoyancy
         float waterHeight = 0f;
@@ -38,15 +40,12 @@ public class Floater : MonoBehaviour
             return;
         }
         Vector3 boyantForce = new Vector3(0f, totalBoyantForce / part.boxColliders.Count, 0f);
-
-        shipRb.AddForceAtPosition(boyantForce / ship.shipParts.Count, part.centerOfMass);
-
-        //Drag
-        shipRb.AddForceAtPosition( Vector3.zero - shipRb.velocity.normalized * (shipRb.velocity.magnitude * 0.02f), part.centerOfMass );  
+        shipRb.AddForceAtPosition(boyantForce / ship.shipParts.Count, floatPoint);
+    
 
         //Debug
         Debug.Log( "angular: "+shipRb.angularVelocity+" | velocity: "+shipRb.velocity );
-        Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), part.transform.TransformPoint(part.centerOfMass), new Color( 1.0f, 1.0f, 1.0f ) );
+        Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), part.transform.TransformPoint(part.transform.localPosition), new Color( 1.0f, 1.0f, 1.0f ) );
 
     }
 }
