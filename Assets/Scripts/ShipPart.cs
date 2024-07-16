@@ -23,6 +23,7 @@ public class ShipPart : MonoBehaviour
     public float armor;
     public float toughness;
     public float health;
+    public float horsepower;
     public Color paintColor;
     public ShipPartCategory category;
     public bool isStatic;

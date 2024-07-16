@@ -51,6 +51,7 @@ public class PartPreviewManager : MonoBehaviour
         {
             previewCamera = GetComponentInChildren<Camera>();
         }
+        Debug.Log(part.GetComponent<ShipPart>().prefabPath);
         previewObject = Instantiate(Resources.Load<GameObject>(part.GetComponent<ShipPart>().prefabPath));
         previewObject.GetComponent<ShipPart>().SetBoxColliders();
         SetLayerRecursively(previewObject);

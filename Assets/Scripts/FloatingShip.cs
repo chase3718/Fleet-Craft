@@ -28,6 +28,14 @@ public class FloatingShip : MonoBehaviour
             floater.ship = ship;
             floater.shipRb = shipRb;
             floater.part = part;
+
+            if( part.horsepower > 0 ){
+                Engine engine = part.AddComponent<Engine>();
+                engine.ship = ship;
+                engine.shipRb = shipRb;
+                engine.part = part;
+                engine.horsepower = part.horsepower;
+            }
         }
     }
 

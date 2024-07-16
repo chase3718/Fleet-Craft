@@ -13,6 +13,7 @@ public class DockUIManager : MonoBehaviour
     Button deleteBtn;
     Button hullBtn;
     Button weaponBtn;
+    Button engineBtn;
     Button saveBtn;
     Button selectBtn;
     ListView partList;
@@ -29,6 +30,7 @@ public class DockUIManager : MonoBehaviour
         deleteBtn = doc.rootVisualElement.Q<Button>("RemoveBtn");
         hullBtn = doc.rootVisualElement.Q<Button>("HullBtn");
         weaponBtn = doc.rootVisualElement.Q<Button>("WeaponBtn");
+        engineBtn = doc.rootVisualElement.Q<Button>("EngineBtn");
         saveBtn = doc.rootVisualElement.Q<Button>("SaveBtn");
         selectBtn = doc.rootVisualElement.Q<Button>("SelectBtn");
         deleteBtn.clicked += () =>
@@ -38,6 +40,7 @@ public class DockUIManager : MonoBehaviour
         };
         hullBtn.clicked += () => TogglePartList("Hull");
         weaponBtn.clicked += () => TogglePartList("Weapon");
+        engineBtn.clicked += () => TogglePartList("Engine");
         selectBtn.clicked += () => {
             buildManager.dockMode = DockMode.Select;
             TogglePartList(null); //Hide the part list because you're no longer in building mode

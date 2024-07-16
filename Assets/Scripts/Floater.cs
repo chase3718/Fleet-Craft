@@ -9,8 +9,8 @@ public class Floater : MonoBehaviour
     public Ship ship;
     public Rigidbody shipRb;
     public ShipPart part;
-    public Vector3 floatPoint =>  part.transform.localPosition+part.centerOfMass;
-    public Vector3 massPoint =>  part.transform.localPosition+part.centerOfMass;
+    public Vector3 floatPoint =>  part.transform.position+part.centerOfMass;
+    public Vector3 massPoint =>  part.transform.position+part.centerOfMass;
 
     void FixedUpdate()
     {
@@ -45,7 +45,7 @@ public class Floater : MonoBehaviour
 
         //Debug
         Debug.Log( "angular: "+shipRb.angularVelocity+" | velocity: "+shipRb.velocity );
-        Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), part.transform.TransformPoint(part.transform.localPosition), new Color( 1.0f, 1.0f, 1.0f ) );
+        Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), part.position, new Color( 1.0f, 1.0f, 1.0f ) );
 
     }
 }

@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class Engine : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Ship ship;
+    public Rigidbody shipRb;
+    public ShipPart part;
+    public float horsepower;
+    public Vector3 forceVector => ship.transform.forward * horsepower;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void Update(){
+        if( Input.GetKey( "w" ) ){
+            shipRb.AddForce( forceVector );
+        } else if( Input.GetKey( "s" ) ){
+            shipRb.AddForce( -forceVector );
+        }
     }
 }
