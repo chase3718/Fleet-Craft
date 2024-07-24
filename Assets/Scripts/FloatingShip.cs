@@ -35,6 +35,9 @@ public class FloatingShip : MonoBehaviour
             if( part.isRudder ){
                 InitComponent<Rudder>(part);
             }
+            if( part.firepower > 0 ){
+                InitComponent<Weapon>(part);
+            }
         }
     }
 
