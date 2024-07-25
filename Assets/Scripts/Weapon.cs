@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,14 +11,15 @@ public class Weapon : MonoBehaviour, ShipMechanism
     public Ship ship {get; set;}
     public Rigidbody shipRb {get; set;}
     public ShipPart part {get; set;}
+    public Transform turret;
+    public Transform barrels;
 
-    // Start is called before the first frame update
     void Start()
     {
-        
+        turret = part.transform.GetChild(1).GetChild(1);
+        barrels = turret.GetChild(1);
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -31,10 +33,16 @@ public class Weapon : MonoBehaviour, ShipMechanism
                     Debug.Log("boom, "+hit.transform.name+", "+hit.point);
                     Debug.DrawLine( part.position, hit.point );
                     
-                    //targetting
+                    //targetting. Really scuffed code but it workss
                     Vector3 target = hit.point - part.position;
-                    target.y = 0;
-                    part.transform.rotation = Quaternion.LookRotation(target);
+                    Vector3 yaw = target;
+                        yaw.y = 0;
+                    Vector3 elevation = target;
+                        elevation.x = yaw.x;
+                    
+                    turret.rotation = Quaternion.LookRotation(yaw);
+                    barrels.rotation = Quaternion.LookRotation(elevation);
+
 
                     //firings
                 }
