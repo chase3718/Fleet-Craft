@@ -40,16 +40,14 @@ public class Weapon : MonoBehaviour, ShipMechanism
                     
                     //Creating a direction vector of the turret
                     Vector3 turretDirection = turret.transform.forward;
-                    Debug.DrawLine ( Vector3.forward, turretDirection );
                     turretDirection.y = 0;
-                        //turretNormal.y = 0;
 
                     float yawAngle = Vector3.SignedAngle( turretDirection, yaw, Vector3.up );
                     Debug.Log( "yaw to target : " + yaw + " , turret normal: "+ turretDirection + " , yaw amount: " + yawAngle ); 
 
                     //rotate
                     turret.transform.Rotate( 0,yawAngle,0 );
-                    
+
                     //firings
                     //GameObject.CreatePrimitive( PrimitiveType.Sphere );
 
