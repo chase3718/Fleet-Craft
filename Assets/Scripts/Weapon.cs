@@ -28,23 +28,31 @@ public class Weapon : MonoBehaviour, ShipMechanism
             RaycastHit hit;
         //Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 )
         //switch out the above, can't get it to detect water.
-            if( Physics.Raycast(ray, out hit ) ){
+            if( Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 ) ) ){
                 if( part != null){ //for whatever reason part.position is sometimes null
                     Debug.Log("boom, "+hit.transform.name+", "+hit.point);
                     Debug.DrawLine( part.position, hit.point );
                     
-                    //targetting. Really scuffed code but it workss
+                    //Finding angle between the turret normal and the target
                     Vector3 target = hit.point - part.position;
                     Vector3 yaw = target;
-                        yaw.y = 0;
-                    Vector3 elevation = target;
-                        elevation.x = yaw.x;
+                        yaw.y = 0;//target heading in 2d
                     
-                    turret.rotation = Quaternion.LookRotation(yaw);
-                    barrels.rotation = Quaternion.LookRotation(elevation);
+                    //Creating a direction vector of the turret
+                    Vector3 turretDirection = turret.transform.forward;
+                    Debug.DrawLine ( Vector3.forward, turretDirection );
+                    turretDirection.y = 0;
+                        //turretNormal.y = 0;
 
+                    float yawAngle = Vector3.SignedAngle( turretDirection, yaw, Vector3.up );
+                    Debug.Log( "yaw to target : " + yaw + " , turret normal: "+ turretDirection + " , yaw amount: " + yawAngle ); 
 
+                    //rotate
+                    turret.transform.Rotate( 0,yawAngle,0 );
+                    
                     //firings
+                    //GameObject.CreatePrimitive( PrimitiveType.Sphere );
+
                 }
             }
         }

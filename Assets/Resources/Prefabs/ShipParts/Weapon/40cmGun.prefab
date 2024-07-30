@@ -1078,7 +1078,7 @@ MonoBehaviour:
   partName: 40cmGun
   alias: 40cm Gun
   description: gun
-  mass: 100
+  mass: 1000
   volume: 100
   armor: 0
   toughness: 0
@@ -1107,6 +1107,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfd0959729df6b748ac2d0a8a8055ef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turret: {fileID: 0}
+  barrels: {fileID: 0}
 --- !u!1 &2677084882822124876
 GameObject:
   m_ObjectHideFlags: 0
