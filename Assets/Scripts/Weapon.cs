@@ -36,28 +36,38 @@ public class Weapon : MonoBehaviour, ShipMechanism
                     //Creating a direction vector of turret entities
                     Vector3 turretDirection = turret.transform.forward;
                     turretDirection.y = 0;
-                    Vector3 barrelElevation = Vector3.zero;
-                    barrelElevation.x = 1;
-                    barrelElevation.y = barrels.transform.forward.y;
+                   
 
+                    //ROTATION
                     //Finding angle between the normal and the target
                     Vector3 target = hit.point - barrels.transform.position;
                     Vector3 yaw = target;
                         yaw.y = 0;//target heading in 2d)
-                    //pitch
-                    Vector3 pitch = Vector3.zero;
-                    pitch.x = target.magnitude;
-                    pitch.y = target.y;
 
                     float yawAngle = Vector3.SignedAngle( turretDirection, yaw, turret.transform.up );
                     //Debug.Log( "target heading : " + yaw + " , turret heading: "+ turretDirection + " , yaw amount: " + yawAngle ); 
 
-                    float pitchAngle = Vector3.SignedAngle(barrelElevation, pitch, barrels.transform.right );
-                    Debug.Log( "target elevation :" + pitch + " , barrel elevation: " + barrelElevation + " , elevation amount: " + pitchAngle );
-
                     //rotate
                     turret.transform.Rotate( 0,yawAngle,0 );
-                    //barrels.transform.Rotate( pitchAngle,0,0 );
+                    
+
+
+                    //ELEVATION
+                    Vector3 barrelElevation = Vector3.zero;
+                    barrelElevation.x = 1;
+                    barrelElevation.y = barrels.transform.forward.y;
+
+                    //pitch                    
+                    Vector3 pitch = Vector3.zero;
+                    pitch.x = target.magnitude;
+                    pitch.y = target.y;
+
+                    float pitchAngle = Vector3.SignedAngle(barrelElevation, pitch, Vector3.back );
+                    Debug.Log( "target elevation :" + pitch + " , barrel elevation: " + barrelElevation + " , elevation amount: " + pitchAngle );
+
+                    //elevate
+                    barrels.transform.Rotate( pitchAngle,0,0 );
+                    
 
                     //firings
                     //GameObject.CreatePrimitive( PrimitiveType.Sphere );
