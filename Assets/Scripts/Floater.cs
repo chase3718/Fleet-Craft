@@ -16,7 +16,7 @@ public class Floater : MonoBehaviour, ShipMechanism
     void FixedUpdate()
     {
         //Gravity
-        shipRb.AddForceAtPosition(Physics.gravity / ship.shipParts.Count, massPoint);
+        shipRb.AddForceAtPosition( Physics.gravity * part.mass /100, massPoint);
 
         //Buoyancy
         float waterHeight = 0f;
@@ -30,23 +30,21 @@ public class Floater : MonoBehaviour, ShipMechanism
             }
             float colliderMass = part.mass / part.boxColliders.Count;
             float colliderVolume = part.volume / part.boxColliders.Count;
-            float colliderDisplacement = colliderVolume / colliderMass;
+            //displacement is the amount of the collider that's underwater
+            float colliderDisplacement = colliderVolume * Mathf.Abs( Mathf.Clamp( (waterHeight - collider.bounds.min.y), 0f, 1f ));;
             float colliderBoyantForce = colliderDisplacement * Physics.gravity.y * -1f;
             totalBoyantForce += colliderBoyantForce;
-
-            //dampening
-            totalBoyantForce *= Mathf.Abs( Mathf.Clamp( (waterHeight - collider.bounds.min.y), 0f, 1f ));
         }
         if( totalBoyantForce != totalBoyantForce ){ //if null
             return;
         }
         Vector3 boyantForce = new Vector3(0f, totalBoyantForce / part.boxColliders.Count, 0f);
-        shipRb.AddForceAtPosition(boyantForce / ship.shipParts.Count, floatPoint);
+        shipRb.AddForceAtPosition(boyantForce / 100, floatPoint);
     
 
         //Debug
         //Debug.Log( "angular: "+shipRb.angularVelocity+" | velocity: "+shipRb.velocity );
-        Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), part.position, new Color( 1.0f, 1.0f, 1.0f ) );
+        Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), massPoint, new Color( 1.0f, 1.0f, 1.0f ) );
 
     }
 }

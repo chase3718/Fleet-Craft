@@ -1038,7 +1038,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1301441013585460858}
   - component: {fileID: 898764671946708241}
-  - component: {fileID: 1658158943657072453}
   m_Layer: 0
   m_Name: 40cmGun
   m_TagString: Untagged
@@ -1079,7 +1078,7 @@ MonoBehaviour:
   alias: 40cm Gun
   description: gun
   mass: 1000
-  volume: 100
+  volume: 125
   armor: 0
   toughness: 0
   health: 0
@@ -1095,20 +1094,6 @@ MonoBehaviour:
   lockVerticalRotation: 1
   requireSturdyConnection: 1
   boxColliders: []
---- !u!114 &1658158943657072453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2659622516416072964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfd0959729df6b748ac2d0a8a8055ef6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  turret: {fileID: 0}
-  barrels: {fileID: 0}
 --- !u!1 &2677084882822124876
 GameObject:
   m_ObjectHideFlags: 0
