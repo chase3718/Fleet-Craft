@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -22,7 +23,8 @@ public class Weapon : MonoBehaviour, ShipMechanism
 
     void Update()
     {
-
+        Debug.DrawLine(turret.transform.position,turret.transform.position+turret.transform.up);
+        Debug.DrawLine(turret.transform.position,turret.transform.position+turret.transform.forward);
         if( Input.GetMouseButtonDown(0) ){
             Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             RaycastHit hit;
@@ -43,60 +45,19 @@ public class Weapon : MonoBehaviour, ShipMechanism
         
         Debug.DrawLine( part.position, hit.point );
 
-
         //ROTATION
         //Finding angle between the normal and the target
         Vector3 target = hit.point - barrels.transform.position;
-        Debug.Log(target);
 
-        Vector3 yaw = target;
-            yaw.y = 0;//target heading in 2d)
-        turret.transform.localRotation = Quaternion.LookRotation(yaw);
+        Vector3 yaw = Vector3.ProjectOnPlane( target, turret.transform.up );
         
-        //ELEVATION
-        target = hit.point - barrels.transform.position;
-        Vector3 elevation = Vector3.zero;
-        elevation.y = 1.0f;
-        barrels.transform.localRotation = Quaternion.LookRotation( elevation );
-        //Debug.Log( "Current elevation : "+barrels.transform.rotation.eulerAngles + ", target : "+elevation );
-    }
-    private void TrainDeprecated( RaycastHit hit ){
-        Debug.Log("boom, "+hit.transform.name+", "+hit.point);
-        Debug.DrawLine( part.position, hit.point );
+        //We want to project target via the y axis onto a plane formed by turret.transform.forward, turret.transform.right
         
-        //Creating a direction vector of turret entities
-        Vector3 turretDirection = turret.transform.forward;
-        turretDirection.y = 0;
-        
-        //ROTATION
-        //Finding angle between the normal and the target
-        Vector3 target = hit.point - barrels.transform.position;
-        Vector3 yaw = target;
-            yaw.y = 0;//target heading in 2d)
+        turret.transform.rotation = Quaternion.LookRotation(yaw);
 
-        float yawAngle = Vector3.SignedAngle( turretDirection, yaw, turret.transform.up );
-        //Debug.Log( "target heading : " + yaw + " , turret heading: "+ turretDirection + " , yaw amount: " + yawAngle ); 
+        Vector3 elevation = Vector3.ProjectOnPlane(target, turret.transform.right);
 
-        //rotate
-        turret.transform.Rotate( 0,yawAngle,0 );
-        
-
-
-        //ELEVATION
-        Vector3 barrelElevation = Vector3.zero;
-        barrelElevation.x = 1;
-        barrelElevation.y = barrels.transform.forward.y;
-
-        //pitch                    
-        Vector3 pitch = Vector3.zero;
-        pitch.x = target.magnitude;
-        pitch.y = target.y;
-
-        float pitchAngle = Vector3.SignedAngle(barrelElevation, pitch, Vector3.back );
-        Debug.Log( "target elevation :" + pitch + " , barrel elevation: " + barrelElevation + " , elevation amount: " + pitchAngle );
-
-        //elevate
-        barrels.transform.Rotate( pitchAngle,0,0 );
+        barrels.transform.rotation = Quaternion.LookRotation(elevation);
         
     }
 }

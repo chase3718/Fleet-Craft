@@ -44,7 +44,7 @@ public class Floater : MonoBehaviour, ShipMechanism
 
         //Debug
         //Debug.Log( "angular: "+shipRb.angularVelocity+" | velocity: "+shipRb.velocity );
-        Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), massPoint, new Color( 1.0f, 1.0f, 1.0f ) );
+        //Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), massPoint, new Color( 1.0f, 1.0f, 1.0f ) );
 
     }
 }
