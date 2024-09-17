@@ -49,15 +49,21 @@ public class Weapon : MonoBehaviour, ShipMechanism
         //Finding angle between the normal and the target
         Vector3 target = hit.point - barrels.transform.position;
 
-        Vector3 yaw = Vector3.ProjectOnPlane( target, turret.transform.up );
-        
         //We want to project target via the y axis onto a plane formed by turret.transform.forward, turret.transform.right
-        
-        turret.transform.rotation = Quaternion.LookRotation(yaw);
+        Vector3 yaw = Vector3.ProjectOnPlane( target, turret.transform.up );
+        yaw = Vector3.ProjectOnPlane( yaw, Vector3.up);
+        turret.transform.localRotation = Quaternion.LookRotation(yaw);
 
-        Vector3 elevation = Vector3.ProjectOnPlane(target, turret.transform.right);
+        //Probably use a more naive approach for elevation to not fuck with 
 
-        barrels.transform.rotation = Quaternion.LookRotation(elevation);
-        
+        Debug.Log(Vector3.ProjectOnPlane(target, barrels.transform.forward));
+        Vector3 elevation = new Vector3(
+            0,
+            Vector3.ProjectOnPlane(target, turret.transform.forward).y,
+            Mathf.Sqrt(Mathf.Pow(target.x,2) + Mathf.Pow(target.z,2))
+            );
+
+        //elevation = Vector3.ProjectOnPlane(elevation, turret.transform.right); //change target to target.y or somethign
+        barrels.localRotation = Quaternion.LookRotation(elevation);
     }
 }
