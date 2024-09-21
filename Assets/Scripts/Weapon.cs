@@ -14,6 +14,7 @@ public class Weapon : MonoBehaviour, ShipMechanism
     public ShipPart part {get; set;}
     public Transform turret;
     public Transform barrels;
+    public float muzzleVelocity = 10;
 
     void Start()
     {
@@ -55,15 +56,57 @@ public class Weapon : MonoBehaviour, ShipMechanism
         turret.transform.localRotation = Quaternion.LookRotation(yaw);
 
         //Probably use a more naive approach for elevation to not fuck with 
-
-        Debug.Log(Vector3.ProjectOnPlane(target, barrels.transform.forward));
+        //Debug.Log(Vector3.ProjectOnPlane(target, barrels.transform.forward));
         Vector3 elevation = new Vector3(
-            0,
+            0.0f,
             Vector3.ProjectOnPlane(target, turret.transform.forward).y,
             Mathf.Sqrt(Mathf.Pow(target.x,2) + Mathf.Pow(target.z,2))
+            ); //This is basically a 2d vector to the target from the barrel. Used to calculate range.
+        
+        //calculating the launch direction vector
+        // float angle = Mathf.Asin( ((Mathf.Pow(muzzleVelocity,2)/elevation.z)+2*elevation.y)/(elevation.z+2*elevation.y) );
+        // elevation.y = 0 + elevation.z*Mathf.Tan(Mathf.Deg2Rad*angle);
+
+        float grav = Physics.gravity.y;
+        float angle = Mathf.Atan(
+            ( 
+                Mathf.Pow(muzzleVelocity,2)-
+                Mathf.Abs(
+                    Mathf.Sqrt(Mathf.Pow(muzzleVelocity,4)-
+                    grav*(grav*Mathf.Pow(elevation.z,2) + 2*(-elevation.y)*Mathf.Pow(muzzleVelocity,2))
+                ))
+            )/(grav*elevation.z)
             );
 
-        //elevation = Vector3.ProjectOnPlane(elevation, turret.transform.right); //change target to target.y or somethign
-        barrels.localRotation = Quaternion.LookRotation(elevation);
+        Debug.Log("elevation : "+angle);
+
+        if(!float.IsNaN(angle)){
+            elevation.y = elevation.z*Mathf.Tan(-angle);
+            barrels.localRotation = Quaternion.LookRotation(elevation);
+            
+            DebugFire();
+            Debug.DrawLine(barrels.transform.position,target,Color.white,10.0f);
+        }
+    }
+
+    private void DebugFire( ){
+        Vector3 velocity = barrels.transform.forward * muzzleVelocity;
+        Debug.DrawLine(barrels.transform.position,barrels.transform.position+velocity*5,Color.white,10.0f);
+
+        Vector3 previous = barrels.transform.position;
+        Vector3 newPos = previous;
+
+        float timescale = 0.1f;
+
+        for( int i = 0; i < 20; i++ ){
+            newPos += velocity * timescale;
+            newPos.y += Physics.gravity.y/2 * timescale * timescale;
+            velocity.y += Physics.gravity.y * timescale;
+
+            Debug.DrawLine(newPos,previous,Color.white,10.0f);
+
+            previous = newPos;
+            Debug.Log("fired");
+        }
     }
 }
