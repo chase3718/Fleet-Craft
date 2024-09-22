@@ -84,12 +84,23 @@ public class Weapon : MonoBehaviour, ShipMechanism
             elevation.y = elevation.z*Mathf.Tan(-angle);
             barrels.localRotation = Quaternion.LookRotation(elevation);
             
-            DebugFire();
-            Debug.DrawLine(barrels.transform.position,target,Color.white,10.0f);
+            Fire();
+            DebugFire( target );
+            
         }
     }
 
-    private void DebugFire( ){
+    private void Fire(){
+        GameObject projectile = Resources.Load<GameObject>("Prefabs/Projectiles/shell");
+        Projectile projscript = projectile.GetComponent<Projectile>();
+        projscript.parent = ship;
+        projscript.initialVelocity = barrels.transform.forward*muzzleVelocity;
+        projectile.transform.localScale = new Vector3(0.36f,0.36f,0.36f); //TODO:replace with caliber
+        Instantiate(projectile,barrels.transform.position,barrels.transform.rotation);
+    }
+
+    private void DebugFire( Vector3 target ){
+        Debug.DrawLine(barrels.transform.position,target,Color.white,10.0f);
         Vector3 velocity = barrels.transform.forward * muzzleVelocity;
         Debug.DrawLine(barrels.transform.position,barrels.transform.position+velocity*5,Color.white,10.0f);
 
