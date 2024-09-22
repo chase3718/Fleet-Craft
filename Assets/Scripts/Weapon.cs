@@ -50,9 +50,7 @@ public class Weapon : MonoBehaviour, ShipMechanism
         
         //ROTATION
         //Finding angle between the normal and the target
-        //We want to project target via the y axis onto a plane formed by turret.transform.forward, turret.transform.right
-        Vector3 yaw = Vector3.ProjectOnPlane( target, turret.transform.up );
-        yaw = Vector3.ProjectOnPlane( yaw, Vector3.up);
+        Vector3 yaw = this.transform.InverseTransformDirection(target); yaw.y = 0;
         turret.transform.localRotation = Quaternion.LookRotation(yaw);
 
         //ELEVATION
@@ -87,7 +85,6 @@ public class Weapon : MonoBehaviour, ShipMechanism
             
             Fire();
             DebugFire( target );
-            
         }
     }
 
@@ -102,9 +99,9 @@ public class Weapon : MonoBehaviour, ShipMechanism
 
     private void DebugFire( Vector3 target ){
         Debug.DrawLine(barrels.transform.position,target,Color.white,10.0f);
-        Vector3 velocity = barrels.transform.forward * muzzleVelocity;
-        Debug.DrawLine(barrels.transform.position,barrels.transform.position+velocity*5,Color.white,10.0f);
 
+        Vector3 velocity = barrels.transform.forward * muzzleVelocity;
+        Debug.DrawLine(barrels.transform.position,barrels.transform.forward*5,Color.white,10.0f);
         Vector3 previous = barrels.transform.position;
         Vector3 newPos = previous;
 
