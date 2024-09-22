@@ -14,7 +14,7 @@ public class Weapon : MonoBehaviour, ShipMechanism
     public ShipPart part {get; set;}
     public Transform turret;
     public Transform barrels;
-    public float muzzleVelocity = 10;
+    public float muzzleVelocity = 50;
 
     void Start()
     {
@@ -28,33 +28,34 @@ public class Weapon : MonoBehaviour, ShipMechanism
         Debug.DrawLine(turret.transform.position,turret.transform.position+turret.transform.forward);
         if( Input.GetMouseButtonDown(0) ){
             Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-            RaycastHit hit;
+
+            Plane sea = new Plane(Vector3.up, Vector3.zero);
+            float dist = 0.0f;
+            if(sea.Raycast(ray, out dist)){
+                Vector3 target = ray.GetPoint(dist);
+                Train( target );
+            }
         //Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 )
         //switch out the above, can't get it to detect water.
-            if( Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 ) ) ){
-                if( part != null){ //for whatever reason part.position is sometimes null
-                    Train( hit );
-
-                    //firings
-                    //GameObject.CreatePrimitive( PrimitiveType.Sphere );
-
-                }
-            }
+            // if( Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 ) ) ){
+                
+            //     target = hit.point - barrels.transform.position;
+                
+            // }
         }
     }
-    private void Train(RaycastHit hit){
-        
-        Debug.DrawLine( part.position, hit.point );
+    private void Train(Vector3 target){
 
+        target -= barrels.transform.position;
+        
         //ROTATION
         //Finding angle between the normal and the target
-        Vector3 target = hit.point - barrels.transform.position;
-
         //We want to project target via the y axis onto a plane formed by turret.transform.forward, turret.transform.right
         Vector3 yaw = Vector3.ProjectOnPlane( target, turret.transform.up );
         yaw = Vector3.ProjectOnPlane( yaw, Vector3.up);
         turret.transform.localRotation = Quaternion.LookRotation(yaw);
 
+        //ELEVATION
         //Probably use a more naive approach for elevation to not fuck with 
         //Debug.Log(Vector3.ProjectOnPlane(target, barrels.transform.forward));
         Vector3 elevation = new Vector3(
