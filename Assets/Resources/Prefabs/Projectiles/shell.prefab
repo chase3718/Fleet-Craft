@@ -9,6 +9,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 88f9f5cc705d4554c9f862865b6c6040, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.36
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 88f9f5cc705d4554c9f862865b6c6040, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.36
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 88f9f5cc705d4554c9f862865b6c6040, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.36
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 88f9f5cc705d4554c9f862865b6c6040, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -129,4 +141,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
   projectileRB: {fileID: 7343120598313416571}
-  initialVelocity: {x: 0, y: 0, z: 0}
+  initialVelocity: {x: 47.427326, y: 7.6517777, z: 13.8600025}
