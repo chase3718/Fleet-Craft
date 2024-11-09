@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 741986434}
   - component: {fileID: 741986433}
   - component: {fileID: 741986436}
+  - component: {fileID: 741986437}
   m_Layer: 0
   m_Name: Ship
   m_TagString: Untagged
@@ -178,6 +179,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2c3dfd426e7d6b48b430563eb720809, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enginePower: 0
+  throttle: 0
+  turn: 0
 --- !u!4 &741986435
 Transform:
   m_ObjectHideFlags: 0
@@ -220,6 +224,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &741986437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741986432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c9d5f6b51114148a23d113fde8cd10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1942623706
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,14 +518,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2048160919}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 705aecbc29ecf94459e0b446665699fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 8211938af8344a7498c3b3427ebaddd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   focus: {fileID: 741986435}
   distance: 25
-  focusRadius: 1
+  focusRadius: 0
   focusCentering: 0.5
-  rotationSpeed: 20
+  rotationSpeed: 30
+  minVertical: 5
+  maxVertical: 90
 --- !u!1 &2069276822
 GameObject:
   m_ObjectHideFlags: 0

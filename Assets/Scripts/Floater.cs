@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class Floater : MonoBehaviour, ShipMechanism
 {
-
-    public Ship ship {get; set;}
+    public FloatingShip parentShip{get; set;}
     public Rigidbody shipRb {get; set;}
     public ShipPart part {get; set;}
     public Vector3 floatPoint =>  part.transform.position+part.centerOfMass;

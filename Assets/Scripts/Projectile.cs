@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public Ship parent;
+    public FloatingShip parent;
     public Rigidbody projectileRB;
 
     public Vector3 initialVelocity;

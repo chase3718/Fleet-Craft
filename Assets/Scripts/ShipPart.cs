@@ -41,7 +41,7 @@ public class ShipPart : MonoBehaviour
     public Vector3Int dimensions => GetDimensions();
     public Vector3 centerOfMass => GetCenterOfMass();
 
-    void Start()
+    void Awake()
     {
         SetBoxColliders();
     }

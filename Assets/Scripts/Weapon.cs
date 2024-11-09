@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 
 public class Weapon : MonoBehaviour, ShipMechanism
 {
-    public Ship ship {get; set;}
+    public FloatingShip parentShip{get; set;}
     public Rigidbody shipRb {get; set;}
     public ShipPart part {get; set;}
     public Transform turret;
@@ -22,29 +22,22 @@ public class Weapon : MonoBehaviour, ShipMechanism
         barrels = turret.GetChild(1);
     }
 
-    void Update()
-    {
-        Debug.DrawLine(turret.transform.position,turret.transform.position+turret.transform.up);
-        Debug.DrawLine(turret.transform.position,turret.transform.position+turret.transform.forward);
-        if( Input.GetMouseButtonDown(0) ){
-            Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+    // void Update()
+    // {
+    //     //Lines used to direct the gun
+    //     //Debug.DrawLine(turret.transform.position,turret.transform.position+turret.transform.up);
+    //     //Debug.DrawLine(turret.transform.position,turret.transform.position+turret.transform.forward);
+        
+    //     //Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 )
+    //     //switch out the above, can't get it to detect water.
+    //         // if( Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 ) ) ){
+                
+    //         //     target = hit.point - barrels.transform.position;
+                
+    //         // }
+    // }
 
-            Plane sea = new Plane(Vector3.up, Vector3.zero);
-            float dist = 0.0f;
-            if(sea.Raycast(ray, out dist)){
-                Vector3 target = ray.GetPoint(dist);
-                Train( target );
-            }
-        //Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 )
-        //switch out the above, can't get it to detect water.
-            // if( Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 ) ) ){
-                
-            //     target = hit.point - barrels.transform.position;
-                
-            // }
-        }
-    }
-    private void Train(Vector3 target){
+    public void Train(Vector3 target){
 
         target -= barrels.transform.position;
         
@@ -91,7 +84,7 @@ public class Weapon : MonoBehaviour, ShipMechanism
     private void Fire(){
         GameObject projectile = Resources.Load<GameObject>("Prefabs/Projectiles/shell");
         Projectile projscript = projectile.GetComponent<Projectile>();
-        projscript.parent = ship;
+        projscript.parent = parentShip;
         projscript.initialVelocity = barrels.transform.forward*muzzleVelocity;
         projectile.transform.localScale = new Vector3(0.36f,0.36f,0.36f); //TODO:replace with caliber
         Instantiate(projectile,barrels.transform.position,barrels.transform.rotation);

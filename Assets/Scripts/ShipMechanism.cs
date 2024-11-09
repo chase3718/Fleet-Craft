@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ShipMechanism
+public interface ShipMechanism // the active ship mechanism.
 {
-        Ship ship {get; set;}
+        FloatingShip parentShip {get; set;}
         Rigidbody shipRb{get; set;}
         ShipPart part{get; set;}
 }

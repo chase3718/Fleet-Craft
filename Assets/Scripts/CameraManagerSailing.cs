@@ -32,20 +32,21 @@ public class CameraManagerSailing : MonoBehaviour
         prevAngle = orbitAngles;
     }
 
-    
-    void Update(){ //instantaneous input management
-        HandleMouseClick();
-    }
-
     // Fixed update because I want consistent camera movement
-    void FixedUpdate()
+    void Update()
     {  
         UpdateFocusPos();
+        HandleMouseClick();
+    }
+    void FixedUpdate(){
         Quaternion rot;
         if( ManualRotation() ){
             ConstraintAngles();
+            Debug.Log("Updated camera positon 1");
             rot = Quaternion.Euler(orbitAngles);
         } else{
+            //TODO: some times 2 is ran when it is supposed to be 1, causing jitter.
+            Debug.Log("Updated camera positon 2");
             rot = transform.localRotation;
         }
         Vector3 lookPos = focusPoint - rot * Vector3.forward * distance;

@@ -7,6 +7,16 @@ public class FloatingShip : MonoBehaviour
 {
     Ship ship;
     Rigidbody shipRb;
+
+    List<Weapon> weapons = new List<Weapon>();
+    List<Rudder> rudders = new List<Rudder>();
+    List<Propeller> propellers = new List<Propeller>(); 
+
+    public float enginePower = 0;
+
+    public float throttle;
+    public float turn;
+
     void Start()
     {
         ship = gameObject.GetComponent<Ship>();
@@ -30,13 +40,13 @@ public class FloatingShip : MonoBehaviour
                 InitComponent<Engine>(part);
             }
             if( part.propellerSpin > 0 ){
-                InitComponent<Propeller>(part);
+                propellers.Add(InitComponent<Propeller>(part));
             }
             if( part.isRudder ){
-                InitComponent<Rudder>(part);
+                rudders.Add(InitComponent<Rudder>(part));
             }
             if( part.firepower > 0 ){
-                InitComponent<Weapon>(part);
+                weapons.Add(InitComponent<Weapon>(part));
             }
         }
     }
@@ -45,7 +55,7 @@ public class FloatingShip : MonoBehaviour
     public T InitComponent<T >(ShipPart part) where T: Component, ShipMechanism
     {
         T component = part.AddComponent<T>();
-        component.ship = ship;
+        component.parentShip = this;
         component.shipRb = shipRb;
         component.part = part;
         return component;
@@ -56,5 +66,11 @@ public class FloatingShip : MonoBehaviour
         //Drag
         shipRb.AddForce( Vector3.zero - shipRb.velocity.normalized * (shipRb.velocity.magnitude * 5.0f) );
         shipRb.AddTorque( Vector3.zero - shipRb.angularVelocity.normalized * (shipRb.angularVelocity.magnitude * 10.5f) );
+    }
+
+    public void fireAt(Vector3 locale){
+        foreach(Weapon weapon in weapons){
+            weapon.Train(locale);
+        }
     }
 }
