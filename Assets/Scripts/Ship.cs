@@ -62,6 +62,10 @@ public class Ship : MonoBehaviour
         SetLayerRecursively(part.gameObject);
         part.transform.SetParent(transform);
 
+        Vector3 partPos = part.position;
+        part.transform.position = transform.position + transform.rotation * partPos;
+        part.transform.rotation = part.transform.rotation * transform.rotation;
+
         return true;
     }
 

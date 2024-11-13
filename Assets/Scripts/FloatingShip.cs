@@ -20,8 +20,9 @@ public class FloatingShip : MonoBehaviour
     void Start()
     {
         ship = gameObject.GetComponent<Ship>();
-        shipRb = ship.GetComponent<Rigidbody>();
+        shipRb = GetComponent<Rigidbody>();
         ship.Load("037a182d-00b8-4834-b63f-0549369c3666");
+        ship.transform.SetParent(this.transform);
         //Testing purposes
         //ship.PremadeShip();
         InstantiateShip();
@@ -48,8 +49,6 @@ public class FloatingShip : MonoBehaviour
             if( part.firepower > 0 ){
                 weapons.Add(InitComponent<Weapon>(part));
             }
-            part.transform.position += transform.position;
-            part.transform.rotation *= transform.rotation;
         }
     }
 
