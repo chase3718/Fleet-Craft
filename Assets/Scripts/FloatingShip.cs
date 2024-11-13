@@ -33,7 +33,7 @@ public class FloatingShip : MonoBehaviour
         shipRb.constraints = RigidbodyConstraints.None;
         foreach (ShipPart part in ship.shipParts.Values)
         {
-            Debug.Log(part.partName);
+            //Debug.Log(part.partName);
 
             InitComponent<Floater>(part);
 

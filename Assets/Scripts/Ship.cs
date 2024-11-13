@@ -258,7 +258,6 @@ public class Ship : MonoBehaviour
     }
     private Vector3Int ToVector3Int(string pos)
     {
-        print(pos);
         if (pos.StartsWith("(") && pos.EndsWith(")"))
         {
             pos = pos.Substring(1, pos.Length - 2);
