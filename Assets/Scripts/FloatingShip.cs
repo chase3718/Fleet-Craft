@@ -48,6 +48,8 @@ public class FloatingShip : MonoBehaviour
             if( part.firepower > 0 ){
                 weapons.Add(InitComponent<Weapon>(part));
             }
+            part.transform.position += transform.position;
+            part.transform.rotation *= transform.rotation;
         }
     }
 

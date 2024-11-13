@@ -67,7 +67,7 @@ public class CameraManagerSailing : MonoBehaviour
         if(Input.GetMouseButton(1)){
             Vector2 input = new Vector2(
                 prevMousePos.y - Input.mousePosition.y,
-                prevMousePos.x - Input.mousePosition.x
+                - (prevMousePos.x - Input.mousePosition.x)
             );
             float e = 0.001f;
             if( Mathf.Abs(input.x) > e || Mathf.Abs(input.y) > e){
