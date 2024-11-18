@@ -37,28 +37,23 @@ public class Weapon : MonoBehaviour, ShipMechanism
     //         // }
     // }
 
-    public void Train(Vector3 target){
+    public void AimAt(Vector3 target){
 
         target -= barrels.transform.position;
         
         //ROTATION
         //Finding angle between the normal and the target
         Vector3 yaw = this.transform.InverseTransformDirection(target); yaw.y = 0;
-        turret.transform.localRotation = Quaternion.LookRotation(yaw);
 
         //ELEVATION
         //Probably use a more naive approach for elevation to not fuck with 
-        //Debug.Log(Vector3.ProjectOnPlane(target, barrels.transform.forward));
         Vector3 elevation = new Vector3(
             0.0f,
-            Vector3.ProjectOnPlane(target, turret.transform.forward).y,
-            Mathf.Sqrt(Mathf.Pow(target.x,2) + Mathf.Pow(target.z,2))
+            Vector3.ProjectOnPlane(target, yaw).y, //target's direct elevation to barrel
+            Mathf.Sqrt(Mathf.Pow(target.x,2) + Mathf.Pow(target.z,2)) //distance to target.
             ); //This is basically a 2d vector to the target from the barrel. Used to calculate range.
         
         //calculating the launch direction vector
-        // float angle = Mathf.Asin( ((Mathf.Pow(muzzleVelocity,2)/elevation.z)+2*elevation.y)/(elevation.z+2*elevation.y) );
-        // elevation.y = 0 + elevation.z*Mathf.Tan(Mathf.Deg2Rad*angle);
-
         float grav = Physics.gravity.y;
         float angle = Mathf.Atan(
             ( 
@@ -70,15 +65,19 @@ public class Weapon : MonoBehaviour, ShipMechanism
             )/(grav*elevation.z)
             );
 
-        Debug.Log("elevation : "+angle);
+        //Debug.Log("elevation : "+angle);
 
         if(!float.IsNaN(angle)){
             elevation.y = elevation.z*Mathf.Tan(-angle);
-            barrels.localRotation = Quaternion.LookRotation(elevation);
-            
+            Train(yaw, elevation);
             Fire();
             DebugFire( target );
         }
+    }
+
+    private void Train( Vector3 heading, Vector3 elevation ){
+        turret.transform.localRotation = Quaternion.LookRotation(heading);
+        barrels.localRotation = Quaternion.LookRotation(elevation);
     }
 
     private void Fire(){

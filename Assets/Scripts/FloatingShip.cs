@@ -71,7 +71,7 @@ public class FloatingShip : MonoBehaviour
 
     public void fireAt(Vector3 locale){
         foreach(Weapon weapon in weapons){
-            weapon.Train(locale);
+            weapon.AimAt(locale);
         }
     }
 }
