@@ -20,7 +20,7 @@ public class Projectile : MonoBehaviour
         this.gameObject.transform.localRotation = Quaternion.LookRotation(projectileRB.velocity.normalized);
 
         if(this.gameObject.transform.position.y < -10.0){
-            Destroy(this);
+            Destroy(this.gameObject);
             Debug.Log("Projectile destroyed");
         }
     }

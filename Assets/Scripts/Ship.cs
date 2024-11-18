@@ -85,6 +85,7 @@ public class Ship : MonoBehaviour
             {
                 shipParts.Remove(_obj.key);
                 SetColliderData();
+                Debug.Log("removed");
                 return true;
             }
             return false;
@@ -314,7 +315,9 @@ public class Ship : MonoBehaviour
 
         if (File.Exists(destination))
         {
+
             file = File.OpenWrite(destination);
+            file.SetLength(0);
         }
         else
         {

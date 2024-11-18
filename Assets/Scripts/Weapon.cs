@@ -69,10 +69,32 @@ public class Weapon : MonoBehaviour, ShipMechanism
 
         if(!float.IsNaN(angle)){
             elevation.y = elevation.z*Mathf.Tan(-angle);
-            Train(yaw, elevation);
-            Fire();
-            DebugFire( target );
+
+            //Check that aim isn't obstructed by self.
+            //TODO: optimise this
+            Boolean obstructed = false;
+            Ray masochismRay = new Ray(barrels.position,new Vector3(yaw.x,elevation.y,yaw.z));
+            RaycastHit[] hits = Physics.RaycastAll(masochismRay, 50.0f);
+            foreach( RaycastHit hit in hits ){
+                // Debug.Log(hit.collider.transform.parent.parent.transform + " against " + this.transform + " : " + hit.collider.transform.parent.parent.transform.Equals(this.transform));
+                if(!ParentMatchRecursive(hit.collider.transform, this.transform)){ //hits something other than self on the ship.
+                    obstructed = true;
+                    break;
+                }
+            }
+            Debug.DrawRay(barrels.position,new Vector3(yaw.x,elevation.y,yaw.z),Color.white,10.0f);
+            if(!obstructed){
+                 Train(yaw, elevation);
+                Fire();
+                DebugFire( target );
+            }
         }
+    }
+
+    private Boolean ParentMatchRecursive(Transform t, Transform to){
+        if(t.Equals(to)) return true;
+        else if(t.parent != null) return ParentMatchRecursive(t.parent, to);
+        else return false;
     }
 
     private void Train( Vector3 heading, Vector3 elevation ){
@@ -90,10 +112,10 @@ public class Weapon : MonoBehaviour, ShipMechanism
     }
 
     private void DebugFire( Vector3 target ){
-        Debug.DrawLine(barrels.transform.position,target,Color.white,10.0f);
+        //Debug.DrawLine(barrels.transform.position,target,Color.white,10.0f);
 
         Vector3 velocity = barrels.transform.forward * muzzleVelocity;
-        Debug.DrawLine(barrels.transform.position,barrels.transform.forward*5,Color.white,10.0f);
+        //Debug.DrawLine(barrels.transform.position,barrels.transform.forward*5,Color.white,10.0f);
         Vector3 previous = barrels.transform.position;
         Vector3 newPos = previous;
 
