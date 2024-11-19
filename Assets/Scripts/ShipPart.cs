@@ -27,6 +27,10 @@ public class ShipPart : MonoBehaviour
     public float propellerSpin;
     public bool isRudder;
     public float firepower;
+
+    public Vector3[] muzzles;
+    public float reloadTime;
+    
     public Color paintColor;
     public ShipPartCategory category;
     public bool isStatic;

@@ -16,10 +16,16 @@ public class Weapon : MonoBehaviour, ShipMechanism
     public Transform barrels;
     public float muzzleVelocity = 50;
 
+    private int barrelCycle = 0;
+    private float[] barrelLastFired;
+
     void Start()
     {
         turret = part.transform.GetChild(1).GetChild(1);
         barrels = turret.GetChild(1);
+
+        barrelLastFired = new float[part.muzzles.Length];
+        Array.Fill<float>(barrelLastFired,Time.time);
     }
 
     // void Update()
@@ -38,6 +44,15 @@ public class Weapon : MonoBehaviour, ShipMechanism
     // }
 
     public void AimAt(Vector3 target){
+
+        //Check what can fire.
+        for(int i = 0; i < barrelLastFired.Length; i++){
+            if(Time.time - barrelLastFired[i] >= part.reloadTime){
+                barrelCycle = i;
+                break;
+            } else { barrelCycle = -1;}
+        }
+        if(barrelCycle==-1){return;}
 
         target -= barrels.transform.position;
         
@@ -84,7 +99,7 @@ public class Weapon : MonoBehaviour, ShipMechanism
             }
             Debug.DrawRay(barrels.position,new Vector3(yaw.x,elevation.y,yaw.z),Color.white,10.0f);
             if(!obstructed){
-                 Train(yaw, elevation);
+                Train(yaw, elevation);
                 Fire();
                 DebugFire( target );
             }
@@ -103,12 +118,20 @@ public class Weapon : MonoBehaviour, ShipMechanism
     }
 
     private void Fire(){
+        //Spawn projectile
         GameObject projectile = Resources.Load<GameObject>("Prefabs/Projectiles/shell");
         Projectile projscript = projectile.GetComponent<Projectile>();
         projscript.parent = parentShip;
         projscript.initialVelocity = barrels.transform.forward*muzzleVelocity;
         projectile.transform.localScale = new Vector3(0.36f,0.36f,0.36f); //TODO:replace with caliber
-        Instantiate(projectile,barrels.transform.position,barrels.transform.rotation);
+        Instantiate(projectile,
+            barrels.transform.position + barrels.transform.rotation * part.muzzles[barrelCycle],
+            barrels.transform.rotation);
+        
+        //Apply reload
+        barrelLastFired[barrelCycle] = Time.time;
+
+        // barrelCycle = (barrelCycle+1)%part.muzzles.Length;
     }
 
     private void DebugFire( Vector3 target ){
