@@ -118,6 +118,12 @@ public class Weapon : MonoBehaviour, ShipMechanism
     }
 
     private void Fire(){
+        //Spawn muzzle
+        GameObject muzzle = Resources.Load<GameObject>("Particles/MuzzleParticle");
+        Instantiate(muzzle,
+            barrels.transform.position + barrels.transform.rotation * part.muzzles[barrelCycle],
+            barrels.transform.rotation);
+
         //Spawn projectile
         GameObject projectile = Resources.Load<GameObject>("Prefabs/Projectiles/shell");
         Projectile projscript = projectile.GetComponent<Projectile>();
