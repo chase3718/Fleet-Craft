@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -15,7 +16,7 @@ public class Floater : MonoBehaviour, ShipMechanism
     void FixedUpdate()
     {
         //Gravity
-        shipRb.AddForceAtPosition( Physics.gravity * part.mass /100, massPoint);
+        shipRb.AddForceAtPosition( Physics.gravity * part.mass /5000, massPoint);
 
         //Buoyancy
         float waterHeight = 0f;
@@ -30,15 +31,15 @@ public class Floater : MonoBehaviour, ShipMechanism
             float colliderMass = part.mass / part.boxColliders.Count;
             float colliderVolume = part.volume / part.boxColliders.Count;
             //displacement is the amount of the collider that's underwater
-            float colliderDisplacement = colliderVolume * Mathf.Abs( Mathf.Clamp( (waterHeight - collider.bounds.min.y), 0f, 1f ));;
+            float colliderDisplacement = colliderVolume * Mathf.Clamp( Math.Abs( waterHeight - collider.bounds.min.y ), 0f, collider.bounds.max.y );;
             float colliderBoyantForce = colliderDisplacement * Physics.gravity.y * -1f;
             totalBoyantForce += colliderBoyantForce;
         }
-        if( totalBoyantForce != totalBoyantForce ){ //if null
-            return;
-        }
-        Vector3 boyantForce = new Vector3(0f, totalBoyantForce / part.boxColliders.Count, 0f);
-        shipRb.AddForceAtPosition(boyantForce / 100, floatPoint);
+        // if( totalBoyantForce != totalBoyantForce ){ //if null
+        //     return;
+        // }
+        Vector3 boyantForce = new Vector3(0f, -totalBoyantForce, 0f);
+        shipRb.AddForceAtPosition(boyantForce/5000, floatPoint);
     
 
         //Debug

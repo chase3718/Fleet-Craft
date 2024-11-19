@@ -65,8 +65,8 @@ public class FloatingShip : MonoBehaviour
     void FixedUpdate()
     {
         //Drag
-        shipRb.AddForce( Vector3.zero - shipRb.velocity.normalized * (shipRb.velocity.magnitude * 5.0f) );
-        shipRb.AddTorque( Vector3.zero - shipRb.angularVelocity.normalized * (shipRb.angularVelocity.magnitude * 10.5f) );
+        shipRb.AddForce( shipRb.velocity * -5.0f );
+        shipRb.AddTorque( shipRb.angularVelocity* -15f );
     }
 
     public void fireAt(Vector3 locale){
