@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -6,6 +7,8 @@ public class Projectile : MonoBehaviour
     public Rigidbody projectileRB;
 
     public Vector3 initialVelocity;
+
+    private Boolean splashed = false;
 
     void Start(){
         Debug.Log("Projectile spawned");
@@ -19,9 +22,16 @@ public class Projectile : MonoBehaviour
         projectileRB.AddForce(Physics.gravity);
         this.gameObject.transform.localRotation = Quaternion.LookRotation(projectileRB.velocity.normalized);
 
+        if(this.gameObject.transform.position.y < 0.0 && !splashed){ //creates a splash
+            GameObject splash = Resources.Load<GameObject>("Particles/WaterSplash");
+            Instantiate(splash,
+                transform.position, 
+                Quaternion.LookRotation(Vector3.up)
+                );
+            splashed = true;
+        }
         if(this.gameObject.transform.position.y < -10.0){
             Destroy(this.gameObject);
-            Debug.Log("Projectile destroyed");
         }
     }
 }

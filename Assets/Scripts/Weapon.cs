@@ -14,7 +14,7 @@ public class Weapon : MonoBehaviour, ShipMechanism
     public ShipPart part {get; set;}
     public Transform turret;
     public Transform barrels;
-    public float muzzleVelocity = 50;
+    public float muzzleVelocity = 100;
 
     private int barrelCycle = 0;
     private float[] barrelLastFired;
