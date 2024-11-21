@@ -25,23 +25,8 @@ public class Weapon : MonoBehaviour, ShipMechanism
         barrels = turret.GetChild(1);
 
         barrelLastFired = new float[part.muzzles.Length];
-        Array.Fill<float>(barrelLastFired,Time.time);
+        Array.Fill<float>(barrelLastFired,Time.time-part.reloadTime);
     }
-
-    // void Update()
-    // {
-    //     //Lines used to direct the gun
-    //     //Debug.DrawLine(turret.transform.position,turret.transform.position+turret.transform.up);
-    //     //Debug.DrawLine(turret.transform.position,turret.transform.position+turret.transform.forward);
-        
-    //     //Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 )
-    //     //switch out the above, can't get it to detect water.
-    //         // if( Physics.Raycast(ray, out hit, math.INFINITY, layerMask: ( 1<<8 ) ) ){
-                
-    //         //     target = hit.point - barrels.transform.position;
-                
-    //         // }
-    // }
 
     public void AimAt(Vector3 target){
 
@@ -88,16 +73,23 @@ public class Weapon : MonoBehaviour, ShipMechanism
             //Check that aim isn't obstructed by self.
             //TODO: optimise this
             Boolean obstructed = false;
-            Ray masochismRay = new Ray(barrels.position,new Vector3(yaw.x,elevation.y,yaw.z));
-            RaycastHit[] hits = Physics.RaycastAll(masochismRay, 50.0f);
+            Ray obstructionRay = new Ray(barrels.position, transform.rotation * new Vector3(yaw.x,elevation.y,yaw.z));
+            RaycastHit[] hits = Physics.RaycastAll(obstructionRay, 50.0f);
             foreach( RaycastHit hit in hits ){
                 // Debug.Log(hit.collider.transform.parent.parent.transform + " against " + this.transform + " : " + hit.collider.transform.parent.parent.transform.Equals(this.transform));
-                if(!ParentMatchRecursive(hit.collider.transform, this.transform)){ //hits something other than self on the ship.
-                    obstructed = true;
-                    break;
+
+                Floater sp = hit.collider.GetComponentInParent<Floater>();
+                if(sp != null){
+                    if(! sp.Equals(GetComponent<Floater>()) && sp.GetComponentInParent<FloatingShip>().Equals(parentShip)){
+                        obstructed = true;
+                        
+                        break;   
+                    }
                 }
             }
-            Debug.DrawRay(barrels.position,new Vector3(yaw.x,elevation.y,yaw.z),Color.white,10.0f);
+
+            Debug.DrawRay(barrels.position, transform.rotation * new Vector3(yaw.x,elevation.y,yaw.z), Color.red,5.0f);
+
             if(!obstructed){
                 Train(yaw, elevation);
                 Fire();
@@ -129,6 +121,7 @@ public class Weapon : MonoBehaviour, ShipMechanism
         Projectile projscript = projectile.GetComponent<Projectile>();
         projscript.parent = parentShip;
         projscript.initialVelocity = barrels.transform.forward*muzzleVelocity;
+        projscript.damage = part.firepower;
         projectile.transform.localScale = new Vector3(0.36f,0.36f,0.36f); //TODO:replace with caliber
         Instantiate(projectile,
             barrels.transform.position + barrels.transform.rotation * part.muzzles[barrelCycle],

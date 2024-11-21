@@ -17,6 +17,9 @@ public class FloatingShip : MonoBehaviour
     public float throttle;
     public float turn;
 
+    public float totalHealth;
+    public float currentHealth;
+
     void Start()
     {
         ship = gameObject.GetComponent<Ship>();

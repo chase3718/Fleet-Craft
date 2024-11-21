@@ -1080,7 +1080,7 @@ MonoBehaviour:
   mass: 1000
   volume: 125
   armor: 0
-  toughness: 0
+  toughness: 1000
   health: 0
   horsepower: 0
   propellerSpin: 0

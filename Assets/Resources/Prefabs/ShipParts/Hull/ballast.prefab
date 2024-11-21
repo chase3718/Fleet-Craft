@@ -84,8 +84,14 @@ MonoBehaviour:
   mass: 150
   volume: 125
   armor: 0
-  toughness: 0
+  toughness: 500
   health: 0
+  horsepower: 0
+  propellerSpin: 0
+  isRudder: 0
+  firepower: 0
+  muzzles: []
+  reloadTime: 0
   paintColor: {r: 0, g: 0, b: 0, a: 0}
   category: 0
   isStatic: 0

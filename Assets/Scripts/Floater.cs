@@ -13,6 +13,17 @@ public class Floater : MonoBehaviour, ShipMechanism
     public Vector3 floatPoint =>  part.transform.position+part.centerOfMass;
     public Vector3 massPoint =>  part.transform.position+part.centerOfMass;
 
+    public float hp;
+
+    void Awake(){
+        parentShip = GetComponent<FloatingShip>();
+    }
+
+    void Start(){
+        hp = part.toughness;
+        parentShip.totalHealth += hp;
+    }
+
     void FixedUpdate()
     {
         //Gravity
@@ -38,13 +49,19 @@ public class Floater : MonoBehaviour, ShipMechanism
         // if( totalBoyantForce != totalBoyantForce ){ //if null
         //     return;
         // }
+        if(part.toughness != 0 ){
+            totalBoyantForce *= hp/part.toughness;
+        }
         Vector3 boyantForce = new Vector3(0f, -totalBoyantForce, 0f);
         shipRb.AddForceAtPosition(boyantForce/5000, floatPoint);
     
-
         //Debug
         //Debug.Log( "angular: "+shipRb.angularVelocity+" | velocity: "+shipRb.velocity );
         //Debug.DrawLine( shipRb.transform.TransformPoint(shipRb.centerOfMass), massPoint, new Color( 1.0f, 1.0f, 1.0f ) );
+    }
 
+    public float Damage(float amount){
+        if(hp > 0){ hp = Mathf.Max(0,hp-amount);}
+        return amount; //this is for actual damage delt, if armour is factored in.
     }
 }
