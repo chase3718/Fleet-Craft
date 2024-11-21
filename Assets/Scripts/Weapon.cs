@@ -68,7 +68,17 @@ public class Weapon : MonoBehaviour, ShipMechanism
         //Debug.Log("elevation : "+angle);
 
         if(!float.IsNaN(angle)){
-            elevation.y = elevation.z*Mathf.Tan(-angle);
+            //Compensating for the ship's list.
+            Vector3 barrelList = Vector3.ProjectOnPlane(yaw, transform.up).normalized;
+            float compensate = barrelList.y;
+            barrelList.y = 0;
+            compensate = Vector2.SignedAngle(
+                new Vector2 ( barrelList.magnitude, compensate ),
+                Vector2.right
+            );
+            
+            angle -= compensate * Mathf.Deg2Rad;
+            elevation.y = elevation.z*Mathf.Tan(-angle) ;
 
             //Check that aim isn't obstructed by self.
             //TODO: optimise this
@@ -92,7 +102,10 @@ public class Weapon : MonoBehaviour, ShipMechanism
 
             if(!obstructed){
                 Train(yaw, elevation);
-                Fire();
+                //Get a shell direction that won't take into account elevation introduced by yaw.
+                Vector3 shellDir = turret.transform.forward;
+                shellDir.y = elevation.normalized.y;
+                Fire(shellDir);
                 DebugFire( target );
             }
         }
@@ -109,18 +122,19 @@ public class Weapon : MonoBehaviour, ShipMechanism
         barrels.localRotation = Quaternion.LookRotation(elevation);
     }
 
-    private void Fire(){
+    private void Fire( Vector3 direction ){
         //Spawn muzzle
         GameObject muzzle = Resources.Load<GameObject>("Particles/MuzzleParticle");
         Instantiate(muzzle,
             barrels.transform.position + barrels.transform.rotation * part.muzzles[barrelCycle],
-            barrels.transform.rotation);
+            Quaternion.LookRotation( direction )
+            );
 
         //Spawn projectile
         GameObject projectile = Resources.Load<GameObject>("Prefabs/Projectiles/shell");
         Projectile projscript = projectile.GetComponent<Projectile>();
         projscript.parent = parentShip;
-        projscript.initialVelocity = barrels.transform.forward*muzzleVelocity;
+        projscript.initialVelocity = direction * muzzleVelocity;
         projscript.damage = part.firepower;
         projectile.transform.localScale = new Vector3(0.36f,0.36f,0.36f); //TODO:replace with caliber
         Instantiate(projectile,
@@ -151,7 +165,6 @@ public class Weapon : MonoBehaviour, ShipMechanism
             Debug.DrawLine(newPos,previous,Color.white,10.0f);
 
             previous = newPos;
-            Debug.Log("fired");
         }
     }
 }

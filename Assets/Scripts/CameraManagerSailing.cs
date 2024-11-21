@@ -42,11 +42,11 @@ public class CameraManagerSailing : MonoBehaviour
         Quaternion rot;
         if( ManualRotation() ){
             ConstraintAngles();
-            Debug.Log("Updated camera positon 1");
+            //Debug.Log("Updated camera positon 1");
             rot = Quaternion.Euler(orbitAngles);
         } else{
             //TODO: some times 2 is ran when it is supposed to be 1, causing jitter.
-            Debug.Log("Updated camera positon 2");
+            //Debug.Log("Updated camera positon 2");
             rot = transform.localRotation;
         }
         Vector3 lookPos = focusPoint - rot * Vector3.forward * distance;
