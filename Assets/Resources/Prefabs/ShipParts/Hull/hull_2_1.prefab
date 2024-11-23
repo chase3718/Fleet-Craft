@@ -82,7 +82,7 @@ MonoBehaviour:
   partName: hull_2_1
   alias: 2x1 Hull
   description: 30
-  mass: 20
+  mass: 60
   volume: 250
   armor: 0
   toughness: 500

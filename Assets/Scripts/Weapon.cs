@@ -79,6 +79,7 @@ public class Weapon : MonoBehaviour, ShipMechanism
             
             angle -= compensate * Mathf.Deg2Rad;
             elevation.y = elevation.z*Mathf.Tan(-angle) ;
+            angle += compensate * Mathf.Deg2Rad; //doubling back for the angle to spawn the rounds.
 
             //Check that aim isn't obstructed by self.
             //TODO: optimise this
@@ -98,13 +99,14 @@ public class Weapon : MonoBehaviour, ShipMechanism
                 }
             }
 
-            Debug.DrawRay(barrels.position, transform.rotation * new Vector3(yaw.x,elevation.y,yaw.z), Color.red,5.0f);
+            Debug.DrawRay(barrels.position, transform.rotation * new Vector3(yaw.x,angle,yaw.z), Color.red,5.0f);
 
             if(!obstructed){
                 Train(yaw, elevation);
                 //Get a shell direction that won't take into account elevation introduced by yaw.
                 Vector3 shellDir = turret.transform.forward;
-                shellDir.y = elevation.normalized.y;
+                shellDir.y = 0;
+                shellDir.y = shellDir.magnitude*Mathf.Tan(-angle);
                 Fire(shellDir);
                 DebugFire( target );
             }
