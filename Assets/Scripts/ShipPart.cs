@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -147,12 +148,28 @@ public class ShipPart : MonoBehaviour
         ssp.isStatic = isStatic;
         ssp.enableOffset = enableOffset;
 
-        ssp.paintColor = new SerializeableShipPart.PaintColor(paintColor);
-        ssp.position = new SerializeableShipPart.Position(position);
-        ssp.rotation = new SerializeableShipPart.Rotation(transform.rotation);
+        // ssp.paintColor = new SerializeableShipPart.PaintColor(paintColor);
+        // ssp.position = new SerializeableShipPart.Position(position);
+        // ssp.rotation = new SerializeableShipPart.Rotation(transform.rotation);
 
         // Serialize to xml
         return ssp;
+    }
+    public SerializablePlacedPart SerializePlacedParts(){
+        SerializablePlacedPart spp = new SerializablePlacedPart();
+        spp.partName = partName;
+        spp.paintColor = new SerializablePlacedPart.PaintColor(paintColor);
+        spp.position = new SerializablePlacedPart.Position(position);
+        spp.rotation = new SerializablePlacedPart.Rotation(transform.rotation);
+        spp.prefabPath = prefabPath;
+        return spp;
+    }
+
+    public ShipPart DeserializePlacedPart(SerializablePlacedPart spp){
+        paintColor = spp.paintColor.ToColor();
+        transform.position = spp.position.ToVector3();
+        transform.rotation = spp.rotation.ToQuaternion();
+        return this;
     }
 
     public ShipPart Deserialize(SerializeableShipPart ssp)
@@ -166,10 +183,10 @@ public class ShipPart : MonoBehaviour
         category = ssp.category;
         isStatic = ssp.isStatic;
         enableOffset = ssp.enableOffset;
-        paintColor = ssp.paintColor.ToColor();
+        // paintColor = ssp.paintColor.ToColor();
         gameObject.name = partName;
-        transform.position = ssp.position.ToVector3();
-        transform.rotation = ssp.rotation.ToQuaternion();
+        // transform.position = ssp.position.ToVector3();
+        // transform.rotation = ssp.rotation.ToQuaternion();
         SetBoxColliders();
         return this;
     }
@@ -206,23 +223,13 @@ public class ShipPart : MonoBehaviour
         return false;
     }
 
-    public class SerializeableShipPart
+    public class SerializablePlacedPart //for loading ships
     {
         public string partName;
-        public float mass;
-        public float volume;
-        public float armor;
-        public float toughness;
-        public float health;
         public PaintColor paintColor;
-        public ShipPartCategory category;
         public Position position;
         public Rotation rotation;
-        public bool isStatic;
-        public bool enableOffset;
-
-        public string prefabPath => $"Prefabs/ShipParts/{category}/{partName}";
-
+        public String prefabPath;
         public class Position
         {
             public float x;
@@ -241,7 +248,7 @@ public class ShipPart : MonoBehaviour
                 return new Vector3(x, y, z);
             }
         }
-
+        
         public class Rotation
         {
             public float x;
@@ -283,5 +290,27 @@ public class ShipPart : MonoBehaviour
                 return new Color(r, g, b, a);
             }
         }
+    }
+
+    public class SerializeableShipPart // for data loading.
+    {
+        public string partName;
+        public float mass;
+        public float volume;
+        public float armor;
+        public float toughness;
+        public float health;
+        // public PaintColor paintColor;
+        public ShipPartCategory category;
+        public Position position;
+        // public Rotation rotation;
+        public bool isStatic;
+        public bool enableOffset;
+
+        public string prefabPath => $"Prefabs/ShipParts/{category}/{partName}";
+
+        
+
+        
     }
 }

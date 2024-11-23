@@ -5,16 +5,9 @@
 	"shipParts": [
 		{
 			"partName": "hull",
-			"mass": 30.0,
-			"volume": 125.0,
-			"armor": 0.0,
-			"toughness": 0.0,
-			"health": 0.0,
 			"paintColor": { "r": 0.0, "g": 0.0, "b": 0.0, "a": 0.0 },
-			"category": 0,
 			"position": { "x": 0.0, "y": 0.0, "z": 0.0 },
 			"rotation": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 },
-			"isStatic": false,
 			"prefabPath": "Prefabs/ShipParts/Hull/hull"
 		}
 	]

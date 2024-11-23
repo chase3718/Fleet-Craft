@@ -280,12 +280,13 @@ public class Ship : MonoBehaviour
         ss.id = id;
         ss.shipName = shipName;
         ss.shipText = shipText;
-        ss.shipParts = shipParts.Values.Select(part => part.Serialize()).ToList();
+        ss.shipParts = shipParts.Values.Select(part => part.SerializePlacedParts()).ToList();
         return JsonConvert.SerializeObject(ss);
     }
 
     public void Deserialize(string json)
     {
+        //TODO: replace this to create new prefab.
         var jsonResult = JsonConvert.DeserializeObject(json).ToString();
         SerializableShip ss = JsonConvert.DeserializeObject<SerializableShip>(jsonResult);
         id = ss.id;
@@ -293,10 +294,10 @@ public class Ship : MonoBehaviour
         shipText = ss.shipText;
         shipParts.Clear();
 
-        foreach (ShipPart.SerializeableShipPart ssp in ss.shipParts)
+        foreach (ShipPart.SerializablePlacedPart ssp in ss.shipParts)
         {
             GameObject part = Instantiate(Resources.Load(ssp.prefabPath) as GameObject);
-            ShipPart shipPart = part.GetComponent<ShipPart>().Deserialize(ssp);
+            ShipPart shipPart = part.GetComponent<ShipPart>().DeserializePlacedPart(ssp);
             part.name = shipPart.key;
             shipPart.transform.SetParent(transform);
             AddPart(shipPart);
@@ -393,7 +394,7 @@ public class Ship : MonoBehaviour
         public string id;
         public string shipName;
         public string shipText;
-        public List<ShipPart.SerializeableShipPart> shipParts = new List<ShipPart.SerializeableShipPart>();
+        public List<ShipPart.SerializablePlacedPart> shipParts = new List<ShipPart.SerializablePlacedPart>();
 
     }
 }
