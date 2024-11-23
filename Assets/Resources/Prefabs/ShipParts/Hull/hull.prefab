@@ -81,7 +81,7 @@ MonoBehaviour:
   partName: hull
   alias: Hull
   description: The basic building block
-  mass: 30
+  mass: 10
   volume: 125
   armor: 0
   toughness: 500

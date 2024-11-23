@@ -1085,7 +1085,7 @@ MonoBehaviour:
   horsepower: 0
   propellerSpin: 0
   isRudder: 0
-  firepower: 100
+  firepower: 150
   muzzles:
   - {x: -0.5, y: 0, z: 3}
   - {x: 0, y: 0, z: 3}

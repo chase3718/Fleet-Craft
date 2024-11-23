@@ -155,22 +155,6 @@ public class ShipPart : MonoBehaviour
         // Serialize to xml
         return ssp;
     }
-    public SerializablePlacedPart SerializePlacedParts(){
-        SerializablePlacedPart spp = new SerializablePlacedPart();
-        spp.partName = partName;
-        spp.paintColor = new SerializablePlacedPart.PaintColor(paintColor);
-        spp.position = new SerializablePlacedPart.Position(position);
-        spp.rotation = new SerializablePlacedPart.Rotation(transform.rotation);
-        spp.prefabPath = prefabPath;
-        return spp;
-    }
-
-    public ShipPart DeserializePlacedPart(SerializablePlacedPart spp){
-        paintColor = spp.paintColor.ToColor();
-        transform.position = spp.position.ToVector3();
-        transform.rotation = spp.rotation.ToQuaternion();
-        return this;
-    }
 
     public ShipPart Deserialize(SerializeableShipPart ssp)
     {
@@ -188,6 +172,26 @@ public class ShipPart : MonoBehaviour
         // transform.position = ssp.position.ToVector3();
         // transform.rotation = ssp.rotation.ToQuaternion();
         SetBoxColliders();
+        return this;
+    }
+
+    //Serialising the entirety of a ship part ran into versioning issues. 
+    //I'll leave them in for reference when in the future modding support.
+    //Preferably replace prefabPath to something like preloading all parts.
+     public SerializablePlacedPart SerializePlacedParts(){ 
+        SerializablePlacedPart spp = new SerializablePlacedPart();
+        spp.partName = partName;
+        spp.paintColor = new SerializablePlacedPart.PaintColor(paintColor);
+        spp.position = new SerializablePlacedPart.Position(position);
+        spp.rotation = new SerializablePlacedPart.Rotation(transform.rotation);
+        spp.prefabPath = prefabPath;
+        return spp;
+    }
+
+    public ShipPart DeserializePlacedPart(SerializablePlacedPart spp){
+        paintColor = spp.paintColor.ToColor();
+        transform.position = spp.position.ToVector3();
+        transform.rotation = spp.rotation.ToQuaternion();
         return this;
     }
 
