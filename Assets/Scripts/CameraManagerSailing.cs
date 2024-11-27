@@ -14,7 +14,7 @@ public class CameraManagerSailing : MonoBehaviour
     public float focusCentering = 0.5f;
 
     Vector2 orbitAngles = new Vector2(45f,0f);
-    
+
     private Boolean panning = false; //thread safety. Avoids race conditions of below
     Vector2 prevAngle;
         
