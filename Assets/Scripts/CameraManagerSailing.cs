@@ -14,11 +14,11 @@ public class CameraManagerSailing : MonoBehaviour
     public float focusCentering = 0.5f;
 
     Vector2 orbitAngles = new Vector2(45f,0f);
-
+    
+    private Boolean panning = false; //thread safety. Avoids race conditions of below
     Vector2 prevAngle;
-
-    Vector2 prevMousePos;
-
+        
+    Vector2 downMousePos;
     [Range(0f,360f)]
     public float rotationSpeed = 90f;
 
@@ -35,22 +35,42 @@ public class CameraManagerSailing : MonoBehaviour
     // Fixed update because I want consistent camera movement
     void Update()
     {  
-        UpdateFocusPos();
         HandleMouseClick();
     }
     void FixedUpdate(){
-        Quaternion rot;
+        UpdateFocusPos();
+
         if( ManualRotation() ){
             ConstraintAngles();
-            //Debug.Log("Updated camera positon 1");
-            rot = Quaternion.Euler(orbitAngles);
-        } else{
-            //TODO: some times 2 is ran when it is supposed to be 1, causing jitter.
-            //Debug.Log("Updated camera positon 2");
-            rot = transform.localRotation;
+            transform.rotation = Quaternion.Euler(orbitAngles);
         }
-        Vector3 lookPos = focusPoint - rot * Vector3.forward * distance;
-        transform.SetPositionAndRotation(lookPos, rot);
+        Vector3 lookPos = focusPoint - transform.rotation * Vector3.forward * distance;
+        transform.position = lookPos;
+    }
+    void HandleMouseClick(){
+        if(Input.GetMouseButtonDown(1)){
+            downMousePos = Input.mousePosition;
+            panning = true;
+        }
+        if(Input.GetMouseButtonUp(1)){
+            prevAngle = orbitAngles;
+            panning = false;
+        }
+    }
+
+    bool ManualRotation(){
+        if(panning){
+            Vector2 input = new Vector2(
+                downMousePos.y - Input.mousePosition.y,
+                - (downMousePos.x - Input.mousePosition.x)
+            );
+            float e = 0.001f;
+            if( input.magnitude > e){
+                orbitAngles = prevAngle + rotationSpeed * Time.unscaledDeltaTime * input;
+                return true;
+            }
+        }
+        return false;
     }
 
     void UpdateFocusPos(){
@@ -61,32 +81,6 @@ public class CameraManagerSailing : MonoBehaviour
             focusPoint = Vector3.Lerp(focus.position, focusPoint, focusRadius/d);
         }
         focusPoint = focus.position;
-    }
-
-    bool ManualRotation(){
-        if(Input.GetMouseButton(1)){
-            Vector2 input = new Vector2(
-                prevMousePos.y - Input.mousePosition.y,
-                - (prevMousePos.x - Input.mousePosition.x)
-            );
-            float e = 0.001f;
-            if( Mathf.Abs(input.x) > e || Mathf.Abs(input.y) > e){
-                orbitAngles = prevAngle + rotationSpeed * Time.unscaledDeltaTime * input;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    void HandleMouseClick(){
-        if(Input.GetMouseButtonDown(1)){
-            prevMousePos = Input.mousePosition;
-            Debug.Log("prev mouse pos assigned "+prevMousePos);
-        }
-        if(Input.GetMouseButtonUp(1)){
-            prevAngle = orbitAngles;
-            Debug.Log("prevAngle assigned"+prevAngle);
-        }
     }
 
     void ConstraintAngles(){
