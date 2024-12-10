@@ -33,8 +33,7 @@ public class Ship : MonoBehaviour
     public int maxZ;
     public float enginePower;
 
-    public string savePath => $"{Application.persistentDataPath}/savedata/ships/{id}/ship.json";
-
+    public string savePath => $"{Application.streamingAssetsPath}/savedShips";
     public bool AddPart(ShipPart part)
     {
         if (shipParts.ContainsKey(part.key))
@@ -311,7 +310,7 @@ public class Ship : MonoBehaviour
     public void Save()
     {
         string json = Serialize();
-        string destination = savePath;
+        string destination = savePath + $"/{id}/ship.json";
         FileStream file;
 
         if (File.Exists(destination))
@@ -322,9 +321,10 @@ public class Ship : MonoBehaviour
         }
         else
         {
-            if (!Directory.Exists($"{Application.persistentDataPath}/savedata/ships/{id}"))
+            if (!Directory.Exists(savePath+$"/{id}"))
             {
-                Directory.CreateDirectory($"{Application.persistentDataPath}/savedata/ships/{id}/");
+                Debug.Log("Path created");
+                Directory.CreateDirectory(savePath + $"/{id}");
             }
             file = File.Create(destination);
         }
@@ -339,8 +339,7 @@ public class Ship : MonoBehaviour
 
     public void Load(string _id)
     {
-
-        string destination = $"{Application.persistentDataPath}/savedata/ships/{_id}/ship.json";
+        string destination = savePath+$"/{_id}/ship.json";
         FileStream file;
 
         if (File.Exists(destination))
@@ -349,7 +348,7 @@ public class Ship : MonoBehaviour
         }
         else
         {
-            Debug.LogError("File not found");
+            Debug.Log("File not found, loading premade ship.");
             PremadeShip();
             return;
         }

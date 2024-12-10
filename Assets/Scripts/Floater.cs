@@ -50,7 +50,7 @@ public class Floater : MonoBehaviour, ShipMechanism
         //     return;
         // }
         if(part.toughness != 0 ){
-            totalBoyantForce *= hp/part.toughness;
+            totalBoyantForce *= (hp/part.toughness * 1.2f);
         }
         Vector3 boyantForce = new Vector3(0f, -totalBoyantForce, 0f);
         shipRb.AddForceAtPosition(boyantForce/5000, floatPoint);
