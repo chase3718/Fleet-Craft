@@ -122,6 +122,67 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &468418119
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 468418122}
+  - component: {fileID: 468418121}
+  - component: {fileID: 468418120}
+  m_Layer: 5
+  m_Name: HUD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &468418120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 468418119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbce6c38c0be0604bbf6f11db0306fce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &468418121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 468418119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: abed3154d13c278439212bc1603d54c2, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: ccb9d9b5494bee444a72b5c578ab2d64, type: 3}
+  m_SortingOrder: 0
+--- !u!4 &468418122
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 468418119}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &741986432
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,6 +243,8 @@ MonoBehaviour:
   enginePower: 0
   throttle: 0
   turn: 0
+  totalHealth: 0
+  currentHealth: 0
 --- !u!4 &741986435
 Transform:
   m_ObjectHideFlags: 0
@@ -435,6 +498,8 @@ MonoBehaviour:
   enginePower: 0
   throttle: 0
   turn: 0
+  totalHealth: 0
+  currentHealth: 0
 --- !u!4 &2029217647
 Transform:
   m_ObjectHideFlags: 0
@@ -734,3 +799,4 @@ SceneRoots:
   - {fileID: 2029217647}
   - {fileID: 1942623709}
   - {fileID: 2048160922}
+  - {fileID: 468418122}

@@ -4,6 +4,7 @@
         <ui:VisualElement name="PartTypes" style="flex-grow: 1; flex-direction: row; height: 100%;">
             <ui:Button text="Save" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" name="SaveBtn" class="toolbar-button" />
         </ui:VisualElement>
+        <ui:Button text="&#10;Exit&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" name="ExitBtn" class="toolbar-button" style="position: relative;" />
     </ui:VisualElement>
     <ui:VisualElement name="MainViewport" picking-mode="Ignore" style="flex-grow: 1; align-items: flex-end; justify-content: space-between; flex-direction: row; height: 19%;">
         <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1; width: 50%; height: 100%; justify-content: flex-end;">

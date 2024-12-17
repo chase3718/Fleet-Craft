@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
+using System;
 
 public class DockUIManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class DockUIManager : MonoBehaviour
     Button weaponBtn;
     Button engineBtn;
     Button saveBtn;
+    Button exitBtn;
     Button selectBtn;
     ListView partList;
     Dictionary<string, List<ShipPart>> partLists = new Dictionary<string, List<ShipPart>>();
@@ -32,6 +34,7 @@ public class DockUIManager : MonoBehaviour
         weaponBtn = doc.rootVisualElement.Q<Button>("WeaponBtn");
         engineBtn = doc.rootVisualElement.Q<Button>("EngineBtn");
         saveBtn = doc.rootVisualElement.Q<Button>("SaveBtn");
+        exitBtn = doc.rootVisualElement.Q<Button>("ExitBtn");
         selectBtn = doc.rootVisualElement.Q<Button>("SelectBtn");
         deleteBtn.clicked += () =>
         {
@@ -49,11 +52,16 @@ public class DockUIManager : MonoBehaviour
             ship.Save();
             SceneManager.LoadScene( "BoatTest" );
             };
+        exitBtn.clicked += () => {
+            ship.Save();
+            Application.Quit();            
+        };
 
         deleteBtn.style.width = deleteBtn.style.height;
         hullBtn.style.width = hullBtn.style.height;
         weaponBtn.style.width = weaponBtn.style.height;
         saveBtn.style.width = saveBtn.style.height;
+        exitBtn.style.width = exitBtn.style.height;
         selectBtn.style.width = selectBtn.style.height;
 
     }
@@ -76,11 +84,20 @@ public class DockUIManager : MonoBehaviour
 
     }
 
+    private Boolean listOpen = false;
     void TogglePartList(string category = null)
     {
-        if ( category != null)
+        if(category == null){
+            partList.style.display = DisplayStyle.None;
+            partList.Clear();
+            listOpen = false;
+        }
+        else if(listOpen){ //closes if open
+            TogglePartList(null);
+        } else
         {
-            buildManager.dockMode = DockMode.Build;
+            
+            buildManager.dockMode = DockMode.Build;   
             partList.Clear();
             partList.itemsSource = partLists[category];
             partList.makeItem = () => new Button();
@@ -96,13 +113,8 @@ public class DockUIManager : MonoBehaviour
             partList.itemsChosen += items => Debug.Log(items);
             partList.selectionChanged += items => Debug.Log(items);
             partList.style.display = DisplayStyle.Flex;
+            listOpen = true;
             return;
-        }
-        else
-        {
-            partList.style.display = DisplayStyle.None;
-            partList.Clear();
-
         }
 
     }
